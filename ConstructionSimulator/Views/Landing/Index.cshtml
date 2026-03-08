@@ -1,0 +1,306 @@
+﻿@{
+    ViewData["Title"] = "Welcome to ConstructIQ";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 0;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .btn-hero {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            margin: 10px;
+        }
+
+        .feature-card {
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            height: 100%;
+        }
+
+            .feature-card:hover {
+                transform: translateY(-10px);
+            }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .stats-section {
+            background: #f8f9fa;
+            padding: 60px 0;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .navbar-custom {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-buildings"></i> ConstructIQ
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary ms-2" asp-controller="Account" asp-action="Register">Get Started</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="hero-title">Simulate. Optimize. Build.</h1>
+                    <p class="hero-subtitle">
+                        The ultimate construction project intelligence system with real-time simulation and conflict detection.
+                    </p>
+                    <div class="mt-4">
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-hero">
+                            Start Free Trial
+                        </a>
+                        <a href="#features" class="btn btn-outline-light btn-hero">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <i class="bi bi-building" style="font-size: 15rem; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <div class="stat-number">500+</div>
+                    <p class="text-muted">Projects Managed</p>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-number">95%</div>
+                    <p class="text-muted">Cost Savings</p>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-number">24/7</div>
+                    <p class="text-muted">Real-Time Monitoring</p>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-number">100%</div>
+                    <p class="text-muted">Conflict Detection</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5" id="features">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold">Powerful Features</h2>
+                <p class="lead text-muted">Everything you need to manage construction projects efficiently</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card feature-card p-4">
+                        <div class="text-center">
+                            <i class="bi bi-gear-fill feature-icon"></i>
+                            <h4>Real-Time Simulation</h4>
+                            <p class="text-muted">
+                                Simulate project changes before committing. See the impact on schedule, budget, and resources instantly.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card feature-card p-4">
+                        <div class="text-center">
+                            <i class="bi bi-exclamation-triangle-fill feature-icon"></i>
+                            <h4>Conflict Detection</h4>
+                            <p class="text-muted">
+                                Automatically detect scheduling conflicts, resource overlaps, and budget constraints.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card feature-card p-4">
+                        <div class="text-center">
+                            <i class="bi bi-cash-stack feature-icon"></i>
+                            <h4>Budget Tracking</h4>
+                            <p class="text-muted">
+                                Real-time cost calculations with detailed breakdowns for labor, materials, and permits.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card feature-card p-4">
+                        <div class="text-center">
+                            <i class="bi bi-people-fill feature-icon"></i>
+                            <h4>Crew Management</h4>
+                            <p class="text-muted">
+                                Assign crews to tasks with automatic availability checking and conflict alerts.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card feature-card p-4">
+                        <div class="text-center">
+                            <i class="bi bi-file-earmark-check-fill feature-icon"></i>
+                            <h4>Permit Tracking</h4>
+                            <p class="text-muted">
+                                Track regulatory permits and ensure compliance with automated status checking.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card feature-card p-4">
+                        <div class="text-center">
+                            <i class="bi bi-graph-up-arrow feature-icon"></i>
+                            <h4>Analytics Dashboard</h4>
+                            <p class="text-muted">
+                                Comprehensive dashboards with real-time statistics and project insights.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-light" id="about">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="display-5 fw-bold mb-4">Why Choose ConstructIQ?</h2>
+                    <p class="lead mb-4">
+                        Built for construction project managers who want to avoid costly mistakes and optimize resource allocation.
+                    </p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Prevent costly errors</strong> before they happen
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Save time</strong> with automated conflict detection
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Improve decision-making</strong> with real-time insights
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <strong>Reduce budget overruns</strong> by 95%
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://via.placeholder.com/600x400/667eea/ffffff?text=Dashboard+Preview"
+                         class="img-fluid rounded shadow" alt="Dashboard Preview">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container text-center">
+            <h2 class="display-4 fw-bold mb-4">Ready to Transform Your Projects?</h2>
+            <p class="lead mb-4">Join hundreds of construction managers using our platform</p>
+            <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg btn-hero">
+                Start Your Free Trial Today
+            </a>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-buildings"></i> ConstructIQ</h5>
+                    <p class="text-muted">Built for Sprint 1 Capstone Project</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-muted">&copy; 2025 All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

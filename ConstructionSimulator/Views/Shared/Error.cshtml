@@ -1,0 +1,37 @@
+﻿@model ConstructionSimulator.Models.ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card border-danger">
+                <div class="card-body">
+                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 4rem;"></i>
+                    <h1 class="display-4 mt-3">Oops! Something went wrong</h1>
+                    <p class="lead text-muted">An error occurred while processing your request.</p>
+
+                    @if (Model != null && Model.ShowRequestId)
+                    {
+                        <div class="alert alert-warning mt-3">
+                            <strong>Request ID:</strong> <code>@Model.RequestId</code>
+                        </div>
+                        <p class="text-muted small">Please provide this Request ID when reporting the issue.</p>
+                    }
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex justify-content-center gap-2">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg">
+                            <i class="bi bi-house-door"></i> Go to Dashboard
+                        </a>
+                        <button onclick="history.back()" class="btn btn-secondary btn-lg">
+                            <i class="bi bi-arrow-left"></i> Go Back
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

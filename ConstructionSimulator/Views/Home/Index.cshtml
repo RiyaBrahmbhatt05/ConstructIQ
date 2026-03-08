@@ -1,0 +1,219 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="page-header">
+    <div class="container">
+        <h1 class="display-4"><i class="bi bi-speedometer2"></i> Project Dashboard</h1>
+        <p class="lead">Construction Intelligence Platform</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Total Projects</h6>
+                            <h2 class="mb-0">@Model.TotalProjects</h2>
+                        </div>
+                        <div class="text-primary">
+                            <i class="bi bi-folder-fill" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card stat-card success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Active Projects</h6>
+                            <h2 class="mb-0">@Model.ActiveProjects</h2>
+                        </div>
+                        <div class="text-success">
+                            <i class="bi bi-activity" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card stat-card warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Total Budget</h6>
+                            <h2 class="mb-0">$@Model.TotalBudget.ToString("N0")</h2>
+                        </div>
+                        <div class="text-warning">
+                            <i class="bi bi-cash-stack" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card stat-card danger">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Overdue Tasks</h6>
+                            <h2 class="mb-0">@Model.OverdueTasks</h2>
+                        </div>
+                        <div class="text-danger">
+                            <i class="bi bi-exclamation-triangle-fill" style="font-size: 2.5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conflicts Alert -->
+    @if (Model.Conflicts.Any())
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Active Conflicts (@Model.Conflicts.Count)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            @foreach (var conflict in Model.Conflicts.Take(5))
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <span class="badge bg-@(conflict.Severity == "Critical" ? "danger" : conflict.Severity == "High" ? "warning" : "info") me-2">
+                                                @conflict.Severity
+                                            </span>
+                                            <span class="badge bg-secondary me-2">@conflict.Type</span>
+                                            <span>@conflict.Message</span>
+                                        </div>
+                                        <small class="text-muted">@conflict.DetectedDate.ToString("MMM dd, yyyy")</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Recent Projects -->
+        <div class="col-md-8 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-folder"></i> Recent Projects</h5>
+                    <a asp-controller="Projects" asp-action="Create" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle"></i> New Project
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentProjects.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Project Name</th>
+                                        <th>Status</th>
+                                        <th>Budget</th>
+                                        <th>Progress</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var project in Model.RecentProjects)
+                                    {
+                                        <tr onclick="window.location='@Url.Action("Details", "Projects", new { id = project.ProjectID })'">
+                                            <td>
+                                                <strong>@project.Name</strong><br />
+                                                <small class="text-muted">@project.Description</small>
+                                            </td>
+                                            <td>
+                                                <span class="status-badge bg-@(project.Status == "Completed" ? "success" : project.Status == "In Progress" ? "primary" : "secondary")">
+                                                    @project.Status
+                                                </span>
+                                            </td>
+                                            <td>
+                                                $@project.Budget.ToString("N0")<br />
+                                                <small class="@(project.IsOverBudget ? "text-danger" : "text-muted")">
+                                                    @project.BudgetUtilization.ToString("F1")% used
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar bg-@(project.BudgetUtilization > 90 ? "danger" : "success")"
+                                                         style="width: @Math.Min(project.BudgetUtilization, 100)%">
+                                                        @project.BudgetUtilization.ToString("F0")%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.ProjectID"
+                                                   class="btn btn-sm btn-outline-primary">View</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-center text-muted py-4">No projects yet. Create your first project to get started!</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Tasks -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Upcoming Tasks</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.UpcomingTasks.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var task in Model.UpcomingTasks)
+                            {
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">@task.Name</h6>
+                                            <small class="text-muted">
+                                                <i class="bi bi-calendar"></i> @task.StartDate.ToString("MMM dd, yyyy")
+                                            </small>
+                                        </div>
+                                        <span class="badge bg-@(task.Priority == "Critical" ? "danger" : task.Priority == "High" ? "warning" : "info")">
+                                            @task.Priority
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-center text-muted py-3">No upcoming tasks</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
