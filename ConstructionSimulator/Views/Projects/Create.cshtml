@@ -3,79 +3,393 @@
     ViewData["Title"] = "Create Project";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Create New Project</h4>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Create" method="post">
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label asp-for="Name" class="form-label">Project Name</label>
-                                <input asp-for="Name" class="form-control" placeholder="Enter project name" />
-                                <span asp-validation-for="Name" class="text-danger"></span>
-                            </div>
-                        </div>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label">Description</label>
-                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Brief description of the project"></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
+    body {
+        background: linear-gradient(135deg, rgb(249, 250, 251) 0%, rgb(243, 244, 246) 100%);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="StartDate" class="form-label">Start Date</label>
-                                <input asp-for="StartDate" type="date" class="form-control" />
-                                <span asp-validation-for="StartDate" class="text-danger"></span>
-                            </div>
+    /* ==================== PAGE HEADER ==================== */
+    .page-header {
+        background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(88, 47, 192) 50%, rgb(68, 21, 182) 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(107, 70, 210, 0.3);
+    }
 
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="EndDate" class="form-label">End Date</label>
-                                <input asp-for="EndDate" type="date" class="form-control" />
-                                <span asp-validation-for="EndDate" class="text-danger"></span>
-                            </div>
-                        </div>
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Budget" class="form-label">Budget ($)</label>
-                                <input asp-for="Budget" type="number" step="0.01" class="form-control" placeholder="0.00" />
-                                <span asp-validation-for="Budget" class="text-danger"></span>
-                            </div>
+    .page-header .container {
+        position: relative;
+        z-index: 2;
+    }
 
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Status" class="form-label">Status</label>
-                                <select asp-for="Status" class="form-select">
-                                    <option value="Planning">Planning</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="On Hold">On Hold</option>
-                                    <option value="Completed">Completed</option>
-                                </select>
-                                <span asp-validation-for="Status" class="text-danger"></span>
-                            </div>
-                        </div>
+    .page-header h1 {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        letter-spacing: -1px;
+    }
 
-                        <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="Index" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-check-circle"></i> Create Project
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+    .page-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    /* ==================== FORM CONTAINER ==================== */
+    .form-container {
+        background: white;
+        border-radius: 1.25rem;
+        padding: 3rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(229, 231, 235, 0.5);
+        max-width: 900px;
+        margin: 0 auto 3rem;
+    }
+
+    .form-section {
+        margin-bottom: 3rem;
+    }
+
+    .form-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .section-title {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: rgb(31, 41, 55);
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgb(229, 231, 235);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    /* ==================== FORM GRID ==================== */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: rgb(31, 41, 55);
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .required-asterisk {
+        color: rgb(239, 68, 68);
+    }
+
+    .form-control {
+        padding: 0.95rem;
+        border: 2px solid rgb(229, 231, 235);
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: rgb(31, 41, 55);
+        font-family: inherit;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: rgb(107, 70, 210);
+        box-shadow: 0 0 0 3px rgba(107, 70, 210, 0.1);
+        background: linear-gradient(135deg, rgba(107, 70, 210, 0.02) 0%, rgba(124, 81, 229, 0.02) 100%);
+    }
+
+    .form-control::placeholder {
+        color: rgb(107, 114, 128);
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+        font-family: inherit;
+    }
+
+    /* ==================== FORM HELPERS ==================== */
+    .form-helper {
+        font-size: 0.85rem;
+        color: rgb(107, 114, 128);
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+
+    .error-message {
+        color: rgb(239, 68, 68);
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .error-message::before {
+        content: '⚠';
+    }
+
+    /* ==================== BUTTONS ==================== */
+    .form-actions {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: flex-end;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 2px solid rgb(229, 231, 235);
+    }
+
+    .btn {
+        padding: 0.95rem 2.5rem;
+        border: none;
+        border-radius: 0.75rem;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(107, 70, 210, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(107, 70, 210, 0.4);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: rgb(229, 231, 235);
+        color: rgb(31, 41, 55);
+    }
+
+    .btn-secondary:hover {
+        background: rgb(209, 213, 219);
+    }
+
+    /* ==================== INFO BOX ==================== */
+    .info-box {
+        background: linear-gradient(135deg, rgba(107, 70, 210, 0.05) 0%, rgba(124, 81, 229, 0.05) 100%);
+        border-left: 4px solid rgb(107, 70, 210);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-box-title {
+        font-weight: 700;
+        color: rgb(107, 70, 210);
+        margin-bottom: 0.5rem;
+    }
+
+    .info-box-text {
+        color: rgb(31, 41, 55);
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    /* ==================== CONTAINER ==================== */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @@media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 1.75rem;
+        }
+
+        .form-container {
+            padding: 1.5rem;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .section-title {
+            font-size: 1.15rem;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-plus-circle"></i> Create New Project</h1>
+        <p>Start a new construction project and begin managing it with ConstructorIQ</p>
     </div>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+<div class="container">
+    <div class="form-container">
+        <!-- Info Box -->
+        <div class="info-box">
+            <div class="info-box-title"><i class="bi bi-info-circle"></i> Project Information</div>
+            <div class="info-box-text">
+                Fill in the project details below. You can edit these details anytime after creation. All fields marked with * are required.
+            </div>
+        </div>
+
+        <form method="post" asp-action="Create">
+            <!-- Basic Information Section -->
+            <div class="form-section">
+                <h2 class="section-title"><i class="bi bi-pencil-square"></i> Basic Information</h2>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" asp-for="Name">
+                            Project Name
+                            <span class="required-asterisk">*</span>
+                        </label>
+                        <input class="form-control" type="text" asp-for="Name" placeholder="e.g., Downtown Office Complex" />
+                        <span asp-validation-for="Name" class="error-message"></span>
+                        <div class="form-helper">Enter a unique name for your project</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" asp-for="Status">
+                            Status
+                            <span class="required-asterisk">*</span>
+                        </label>
+                        <select class="form-control" asp-for="Status">
+                            <option value="">Select Status</option>
+                            <option value="Planning">Planning</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                        <span asp-validation-for="Status" class="error-message"></span>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" asp-for="Description">
+                            Description
+                            <span class="required-asterisk">*</span>
+                        </label>
+                        <textarea class="form-control" asp-for="Description" placeholder="Describe your project in detail..."></textarea>
+                        <span asp-validation-for="Description" class="error-message"></span>
+                        <div class="form-helper">Provide a detailed description of the project scope</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget & Timeline Section -->
+            <div class="form-section">
+                <h2 class="section-title"><i class="bi bi-calendar-event"></i> Budget & Timeline</h2>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" asp-for="Budget">
+                            Budget ($)
+                            <span class="required-asterisk">*</span>
+                        </label>
+                        <input class="form-control" type="number" asp-for="Budget" placeholder="0.00" step="0.01" />
+                        <span asp-validation-for="Budget" class="error-message"></span>
+                        <div class="form-helper">Total budget allocated for this project</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" asp-for="StartDate">
+                            Start Date
+                            <span class="required-asterisk">*</span>
+                        </label>
+                        <input class="form-control" type="date" asp-for="StartDate" />
+                        <span asp-validation-for="StartDate" class="error-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" asp-for="EndDate">
+                            End Date
+                            <span class="required-asterisk">*</span>
+                        </label>
+                        <input class="form-control" type="date" asp-for="EndDate" />
+                        <span asp-validation-for="EndDate" class="error-message"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location Section -->
+            <div class="form-section">
+                <h2 class="section-title"><i class="bi bi-geo-alt"></i> Location</h2>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input class="form-control" type="text" placeholder="Project location address" />
+                        <div class="form-helper">Enter the physical location of your project</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input class="form-control" type="text" placeholder="City name" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a asp-controller="Projects" asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Create Project
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

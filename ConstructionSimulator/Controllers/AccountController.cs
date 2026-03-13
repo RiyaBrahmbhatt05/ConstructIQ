@@ -1,44 +1,128 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ConstructionSimulator.Services;
+using ConstructionSimulator.ViewModels;
 
 namespace ConstructionSimulator.Controllers
 {
     public class AccountController : Controller
     {
-        // GET: Account/Login
-        public IActionResult Login()
+        private readonly AuthenticationService _authService;
+
+        public AccountController(AuthenticationService authService)
         {
+            _authService = authService;
+        }
+
+        // GET: Account/Login
+        [HttpGet]
+        public IActionResult Login(string returnUrl = null)
+        {
+            // If user is already logged in, redirect to home
+            if (HttpContext.Session.GetString("UserEmail") != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
+        }
+
+        // POST: Account/Login
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var (success, user) = await _authService.LoginAsync(model.Email, model.Password);
+
+            if (!success)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid email or password");
+                return View(model);
+            }
+
+            // Set session
+            HttpContext.Session.SetString("UserId", user.Id.ToString());
+            HttpContext.Session.SetString("UserEmail", user.Email);
+            HttpContext.Session.SetString("UserName", user.FullName);
+
+            // If remember me is checked, set cookie for longer period
+            if (model.RememberMe)
+            {
+                Response.Cookies.Append("UserEmail", user.Email,
+                    new Microsoft.AspNetCore.Http.CookieOptions
+                    {
+                        Expires = DateTimeOffset.UtcNow.AddDays(30)
+                    });
+            }
+
+            TempData["SuccessMessage"] = $"Welcome back, {user.FullName}!";
+            return RedirectToLocal(returnUrl);
         }
 
         // GET: Account/Register
+        [HttpGet]
         public IActionResult Register()
         {
+            // If user is already logged in, redirect to home
+            if (HttpContext.Session.GetString("UserEmail") != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
-        // POST: Account/Login (placeholder - no logic yet)
+        // POST: Account/Register
         [HttpPost]
-        public IActionResult Login(string email, string password)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            // TODO: Add authentication logic later
-            TempData["InfoMessage"] = "Login functionality will be implemented in Sprint 2";
-            return RedirectToAction("Index", "Home");
-        }
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
-        // POST: Account/Register (placeholder - no logic yet)
-        [HttpPost]
-        public IActionResult Register(string name, string email, string password)
-        {
-            // TODO: Add registration logic later
-            TempData["SuccessMessage"] = "Registration successful! (Demo mode - no actual account created)";
+            var (success, message) = await _authService.RegisterAsync(model.FullName, model.Email, model.Password);
+
+            if (!success)
+            {
+                ModelState.AddModelError(string.Empty, message);
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Registration successful! Please login with your credentials.";
             return RedirectToAction("Login");
         }
 
-        // Logout (placeholder)
+        // GET: Account/Logout
+        [HttpGet]
         public IActionResult Logout()
         {
-            // TODO: Add logout logic later
+            // Clear session
+            HttpContext.Session.Remove("UserId");
+            HttpContext.Session.Remove("UserEmail");
+            HttpContext.Session.Remove("UserName");
+
+            // Clear cookie if it exists
+            Response.Cookies.Delete("UserEmail");
+
+            TempData["InfoMessage"] = "You have been logged out successfully.";
             return RedirectToAction("Index", "Landing");
+        }
+
+        // Helper method
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            return RedirectToAction("Index", "Home");
         }
     }
 }

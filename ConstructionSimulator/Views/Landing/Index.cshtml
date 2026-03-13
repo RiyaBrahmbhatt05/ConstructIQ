@@ -1,306 +1,538 @@
 ﻿@{
-    ViewData["Title"] = "Welcome to ConstructIQ";
-    Layout = null;
+    ViewData["Title"] = "Welcome to ConstructorIQ";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background: white;
+        overflow-x: hidden;
+    }
+
+    /* ==================== HERO SECTION ==================== */
+    .hero {
+        background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(88, 47, 192) 50%, rgb(68, 21, 182) 100%);
+        color: white;
+        padding: 6rem 0 4rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .hero::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: 5%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        letter-spacing: -1.5px;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 1.3rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+        font-weight: 500;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 3rem;
+    }
+
+    .btn {
+        padding: 0.85rem 2rem;
+        border-radius: 0.75rem;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: white;
+        color: rgb(107, 70, 210);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .btn-secondary:hover {
+        background: white;
+        color: rgb(107, 70, 210);
+    }
+
+    .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .stat {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        opacity: 0.85;
+        font-weight: 500;
+    }
+
+    /* ==================== FEATURES SECTION ==================== */
+    .features {
+        padding: 6rem 0;
+        background: linear-gradient(135deg, rgb(249, 250, 251) 0%, rgb(243, 244, 246) 100%);
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .section-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        color: rgb(31, 41, 55);
+        margin-bottom: 1rem;
+        letter-spacing: -0.5px;
+    }
+
+    .section-subtitle {
+        font-size: 1.2rem;
+        color: rgb(107, 114, 128);
+        max-width: 600px;
+        margin: 0 auto;
+        font-weight: 500;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 1.25rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(229, 231, 235, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .feature-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        border-color: rgba(107, 70, 210, 0.2);
+    }
+
+    .feature-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, rgba(107, 70, 210, 0.1) 0%, rgba(124, 81, 229, 0.05) 100%);
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: rgb(31, 41, 55);
+        margin-bottom: 1rem;
+    }
+
+    .feature-text {
+        color: rgb(107, 114, 128);
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    /* ==================== STATS SECTION ==================== */
+    .stats-section {
+        padding: 6rem 0;
+        background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(88, 47, 192) 50%, rgb(68, 21, 182) 100%);
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stats-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-item h3 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-item p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* ==================== CTA SECTION ==================== */
+    .cta-section {
+        padding: 6rem 0;
+        background: white;
+        text-align: center;
+    }
+
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: rgb(31, 41, 55);
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-text {
+        font-size: 1.1rem;
+        color: rgb(107, 114, 128);
+        margin-bottom: 2.5rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* ==================== FOOTER ==================== */
+    footer {
+        background: linear-gradient(135deg, rgb(31, 41, 55) 0%, rgb(17, 24, 39) 100%);
+        color: white;
+        padding: 4rem 0 2rem 0;
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    .footer-section h4 {
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+    }
+
+    .footer-section a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: color 0.2s ease;
+        display: block;
+        margin-bottom: 0.75rem;
+    }
+
+    .footer-section a:hover {
+        color: white;
+    }
+
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 2rem;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* ==================== UTILITIES ==================== */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @@media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2rem;
         }
 
-        .hero-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 100px 0;
-            min-height: 600px;
-            display: flex;
-            align-items: center;
+        .hero p {
+            font-size: 1rem;
         }
 
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: bold;
-            margin-bottom: 1.5rem;
+        .section-title {
+            font-size: 1.75rem;
         }
 
-        .hero-subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            opacity: 0.95;
+        .section-subtitle {
+            font-size: 1rem;
         }
 
-        .btn-hero {
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            margin: 10px;
+        .features-grid {
+            gap: 1.5rem;
         }
 
         .feature-card {
-            border: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            height: 100%;
+            padding: 1.5rem;
         }
 
-            .feature-card:hover {
-                transform: translateY(-10px);
-            }
-
-        .feature-icon {
-            font-size: 3rem;
-            color: #667eea;
-            margin-bottom: 1rem;
+        .stats-grid {
+            gap: 2rem;
         }
 
-        .stats-section {
-            background: #f8f9fa;
-            padding: 60px 0;
+        .stat-item h3 {
+            font-size: 2rem;
         }
 
-        .stat-number {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #667eea;
+        .hero-buttons {
+            flex-direction: column;
         }
 
-        .navbar-custom {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        .btn {
+            width: 100%;
+            text-align: center;
         }
 
-        .cta-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 80px 0;
+        .footer-content {
+            grid-template-columns: 1fr;
         }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="bi bi-buildings"></i> ConstructIQ
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-primary ms-2" asp-controller="Account" asp-action="Register">Get Started</a>
-                    </li>
-                </ul>
+    }
+</style>
+
+<div class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>🏗️ Simulate. Optimize. Build.</h1>
+            <p>The ultimate construction project intelligence system with real-time simulation and intelligent conflict detection.</p>
+            
+            <div class="hero-buttons">
+                <a href="@Url.Action("Register", "Account")" class="btn btn-primary">Get Started Free</a>
+                <a href="#features" class="btn btn-secondary">Learn More</a>
             </div>
-        </div>
-    </nav>
 
-    <section class="hero-section">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h1 class="hero-title">Simulate. Optimize. Build.</h1>
-                    <p class="hero-subtitle">
-                        The ultimate construction project intelligence system with real-time simulation and conflict detection.
-                    </p>
-                    <div class="mt-4">
-                        <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-hero">
-                            Start Free Trial
-                        </a>
-                        <a href="#features" class="btn btn-outline-light btn-hero">
-                            Learn More
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-6 text-center">
-                    <i class="bi bi-building" style="font-size: 15rem; opacity: 0.3;"></i>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="stats-section">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-md-3">
+            <div class="hero-stats">
+                <div class="stat">
                     <div class="stat-number">500+</div>
-                    <p class="text-muted">Projects Managed</p>
+                    <div class="stat-label">Projects Managed</div>
                 </div>
-                <div class="col-md-3">
+                <div class="stat">
                     <div class="stat-number">95%</div>
-                    <p class="text-muted">Cost Savings</p>
+                    <div class="stat-label">Cost Savings</div>
                 </div>
-                <div class="col-md-3">
+                <div class="stat">
                     <div class="stat-number">24/7</div>
-                    <p class="text-muted">Real-Time Monitoring</p>
+                    <div class="stat-label">Real-Time Monitoring</div>
                 </div>
-                <div class="col-md-3">
+                <div class="stat">
                     <div class="stat-number">100%</div>
-                    <p class="text-muted">Conflict Detection</p>
+                    <div class="stat-label">Conflict Detection</div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</div>
 
-    <section class="py-5" id="features">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-4 fw-bold">Powerful Features</h2>
-                <p class="lead text-muted">Everything you need to manage construction projects efficiently</p>
+<section class="features" id="features">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Powerful Features</h2>
+            <p class="section-subtitle">Everything you need to manage construction projects efficiently and effectively</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Real-Time Simulation</h3>
+                <p class="feature-text">Simulate project scenarios in real-time and make data-driven decisions with advanced analytics and insights.</p>
             </div>
 
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card feature-card p-4">
-                        <div class="text-center">
-                            <i class="bi bi-gear-fill feature-icon"></i>
-                            <h4>Real-Time Simulation</h4>
-                            <p class="text-muted">
-                                Simulate project changes before committing. See the impact on schedule, budget, and resources instantly.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            <div class="feature-card">
+                <div class="feature-icon">🚨</div>
+                <h3 class="feature-title">Conflict Detection</h3>
+                <p class="feature-text">Automatically detect resource conflicts, schedule issues, and budget overruns before they become problems.</p>
+            </div>
 
-                <div class="col-md-4">
-                    <div class="card feature-card p-4">
-                        <div class="text-center">
-                            <i class="bi bi-exclamation-triangle-fill feature-icon"></i>
-                            <h4>Conflict Detection</h4>
-                            <p class="text-muted">
-                                Automatically detect scheduling conflicts, resource overlaps, and budget constraints.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3 class="feature-title">Budget Tracking</h3>
+                <p class="feature-text">Monitor project budgets in real-time with detailed cost breakdowns and utilization analytics.</p>
+            </div>
 
-                <div class="col-md-4">
-                    <div class="card feature-card p-4">
-                        <div class="text-center">
-                            <i class="bi bi-cash-stack feature-icon"></i>
-                            <h4>Budget Tracking</h4>
-                            <p class="text-muted">
-                                Real-time cost calculations with detailed breakdowns for labor, materials, and permits.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3 class="feature-title">Team Collaboration</h3>
+                <p class="feature-text">Work together seamlessly with team members with real-time updates and collaboration tools.</p>
+            </div>
 
-                <div class="col-md-4">
-                    <div class="card feature-card p-4">
-                        <div class="text-center">
-                            <i class="bi bi-people-fill feature-icon"></i>
-                            <h4>Crew Management</h4>
-                            <p class="text-muted">
-                                Assign crews to tasks with automatic availability checking and conflict alerts.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3 class="feature-title">Advanced Analytics</h3>
+                <p class="feature-text">Get deep insights into project performance with comprehensive dashboards and detailed reporting.</p>
+            </div>
 
-                <div class="col-md-4">
-                    <div class="card feature-card p-4">
-                        <div class="text-center">
-                            <i class="bi bi-file-earmark-check-fill feature-icon"></i>
-                            <h4>Permit Tracking</h4>
-                            <p class="text-muted">
-                                Track regulatory permits and ensure compliance with automated status checking.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="card feature-card p-4">
-                        <div class="text-center">
-                            <i class="bi bi-graph-up-arrow feature-icon"></i>
-                            <h4>Analytics Dashboard</h4>
-                            <p class="text-muted">
-                                Comprehensive dashboards with real-time statistics and project insights.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Fast & Reliable</h3>
+                <p class="feature-text">Enterprise-grade infrastructure ensuring 99.9% uptime and blazing-fast performance.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="py-5 bg-light" id="about">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h2 class="display-5 fw-bold mb-4">Why Choose ConstructIQ?</h2>
-                    <p class="lead mb-4">
-                        Built for construction project managers who want to avoid costly mistakes and optimize resource allocation.
-                    </p>
-                    <ul class="list-unstyled">
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            <strong>Prevent costly errors</strong> before they happen
-                        </li>
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            <strong>Save time</strong> with automated conflict detection
-                        </li>
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            <strong>Improve decision-making</strong> with real-time insights
-                        </li>
-                        <li class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            <strong>Reduce budget overruns</strong> by 95%
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-lg-6">
-                    <img src="https://via.placeholder.com/600x400/667eea/ffffff?text=Dashboard+Preview"
-                         class="img-fluid rounded shadow" alt="Dashboard Preview">
-                </div>
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h3>500+</h3>
+                <p>Projects Successfully Managed</p>
+            </div>
+            <div class="stat-item">
+                <h3>$50M+</h3>
+                <p>In Project Value Tracked</p>
+            </div>
+            <div class="stat-item">
+                <h3>10K+</h3>
+                <p>Active Users Worldwide</p>
+            </div>
+            <div class="stat-item">
+                <h3>99.9%</h3>
+                <p>System Uptime Guaranteed</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="cta-section">
-        <div class="container text-center">
-            <h2 class="display-4 fw-bold mb-4">Ready to Transform Your Projects?</h2>
-            <p class="lead mb-4">Join hundreds of construction managers using our platform</p>
-            <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg btn-hero">
-                Start Your Free Trial Today
-            </a>
-        </div>
-    </section>
+<section class="cta-section">
+    <div class="container">
+        <h2 class="cta-title">Ready to Transform Your Projects?</h2>
+        <p class="cta-text">Join thousands of construction professionals using ConstructorIQ to optimize their projects and increase profitability.</p>
+        <a href="@Url.Action("Register", "Account")" class="btn btn-primary">Start Your Free Trial Today</a>
+    </div>
+</section>
 
-    <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5><i class="bi bi-buildings"></i> ConstructIQ</h5>
-                    <p class="text-muted">Built for Sprint 1 Capstone Project</p>
-                </div>
-                <div class="col-md-6 text-end">
-                    <p class="text-muted">&copy; 2025 All Rights Reserved</p>
-                </div>
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>🏗️ ConstructorIQ</h4>
+                <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 1.5rem;">The ultimate construction project intelligence system.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Product</h4>
+                <a href="#">Features</a>
+                <a href="#">Pricing</a>
+                <a href="#">Security</a>
+                <a href="#">Roadmap</a>
+            </div>
+            <div class="footer-section">
+                <h4>Company</h4>
+                <a href="#">About</a>
+                <a href="#">Blog</a>
+                <a href="#">Careers</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
             </div>
         </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+        <div class="footer-bottom">
+            <p>&copy; 2024 ConstructorIQ. All rights reserved.</p>
+        </div>
+    </div>
+</footer>

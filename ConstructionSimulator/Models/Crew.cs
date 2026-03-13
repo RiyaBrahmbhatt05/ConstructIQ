@@ -4,7 +4,7 @@ namespace ConstructionSimulator.Models
 {
     public class Crew
     {
-        public int CrewID { get; set; }
+        public int CrewId { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -12,7 +12,7 @@ namespace ConstructionSimulator.Models
 
         [Required]
         [StringLength(100)]
-        public string SkillType { get; set; } = string.Empty; // Carpentry, Electrical, Plumbing, etc.
+        public string SkillType { get; set; } = string.Empty;
 
         [Range(1, 100)]
         public int TeamSize { get; set; } = 1;
@@ -22,13 +22,21 @@ namespace ConstructionSimulator.Models
 
         public bool IsAvailable { get; set; } = true;
 
+        [StringLength(200)]
+        public string? RequiredLicenses { get; set; }
+
+        public string? MemberNames { get; set; }
+
+        public string? ContactDetails { get; set; }
+
+        [Range(0, 100)]
+        public int YearsOfExperience { get; set; }
+
         public string? Notes { get; set; }
 
-        // Navigation property
-        public List<Task> Tasks { get; set; } = new List<Task>();
+        public List<ProjectTask> Tasks { get; set; } = new();
 
-        // Calculated properties
         public int ActiveTasksCount => Tasks?.Count(t => t.Status == "In Progress") ?? 0;
-        public decimal DailyCost => HourlyRate * 8 * TeamSize; // Assuming 8-hour workday
+        public decimal DailyCost => HourlyRate * 8;
     }
 }

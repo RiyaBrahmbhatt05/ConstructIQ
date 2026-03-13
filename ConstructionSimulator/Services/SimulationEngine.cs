@@ -6,21 +6,21 @@ namespace ConstructionSimulator.Services
 {
     public class SimulationEngine
     {
-        private readonly InMemoryDataService _dataService;
+        private readonly ApplicationDbContext _context;
         private readonly ConflictDetector _conflictDetector;
 
-        public SimulationEngine(InMemoryDataService dataService, ConflictDetector conflictDetector)
+        public SimulationEngine(ApplicationDbContext context, ConflictDetector conflictDetector)
         {
-            _dataService = dataService;
+            _context = context;
             _conflictDetector = conflictDetector;
         }
 
-        public SimulationResultViewModel SimulateTaskChange(int projectId, Models.Task modifiedTask, bool isNewTask = false)
+        public SimulationResultViewModel SimulateTaskChange(int projectId, ProjectTask modifiedTask, bool isNewTask = false)
         {
             var result = new SimulationResultViewModel { Success = true };
 
-            // Get project
-            var project = _dataService.GetProjectById(projectId);
+            // Get project from database
+            var project = _context.Projects.FirstOrDefault(p => p.ProjectId == projectId);
             if (project == null)
             {
                 result.Success = false;
@@ -36,7 +36,7 @@ namespace ConstructionSimulator.Services
                     Type = "Schedule",
                     Severity = "High",
                     Message = $"Task dates are outside project timeline ({project.StartDate:yyyy-MM-dd} to {project.EndDate:yyyy-MM-dd})",
-                    RelatedTaskID = modifiedTask.TaskID,
+                    RelatedTaskID = modifiedTask.ProjectTaskId,
                     RelatedTaskName = modifiedTask.Name
                 });
             }
@@ -44,10 +44,14 @@ namespace ConstructionSimulator.Services
             // Check dependencies
             if (!string.IsNullOrEmpty(modifiedTask.Dependencies))
             {
-                var dependencyIds = modifiedTask.Dependencies.Split(',').Select(int.Parse).ToList();
+                var dependencyIds = modifiedTask.Dependencies
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(id => int.Parse(id.Trim()))
+                    .ToList();
+
                 foreach (var depId in dependencyIds)
                 {
-                    var dependentTask = _dataService.GetTaskById(depId);
+                    var dependentTask = _context.Tasks.FirstOrDefault(t => t.ProjectTaskId == depId);
                     if (dependentTask != null)
                     {
                         if (modifiedTask.StartDate < dependentTask.EndDate)
@@ -57,7 +61,7 @@ namespace ConstructionSimulator.Services
                                 Type = "Schedule",
                                 Severity = "Critical",
                                 Message = $"Task cannot start before dependent task '{dependentTask.Name}' ends on {dependentTask.EndDate:yyyy-MM-dd}",
-                                RelatedTaskID = modifiedTask.TaskID,
+                                RelatedTaskID = modifiedTask.ProjectTaskId,
                                 RelatedTaskName = modifiedTask.Name
                             });
                         }
@@ -66,7 +70,7 @@ namespace ConstructionSimulator.Services
             }
 
             // Check crew availability
-            if (modifiedTask.CrewID.HasValue)
+            if (modifiedTask.CrewId.HasValue)
             {
                 var crewConflicts = _conflictDetector.DetectCrewConflicts(modifiedTask);
                 result.Conflicts.AddRange(crewConflicts);
@@ -91,17 +95,21 @@ namespace ConstructionSimulator.Services
                     Type = "Budget",
                     Severity = "Critical",
                     Message = $"Task will exceed project budget. Current: ${currentProjectCost:N2}, Projected: ${projectedCost:N2}, Budget: ${project.Budget:N2}",
-                    RelatedTaskID = modifiedTask.TaskID,
+                    RelatedTaskID = modifiedTask.ProjectTaskId,
                     RelatedTaskName = modifiedTask.Name
                 });
             }
 
             // Calculate schedule impact
-            var allTasks = _dataService.GetTasksByProjectId(projectId);
+            var allTasks = _context.Tasks
+                .Where(t => t.ProjectId == projectId)
+                .ToList();
+
             if (!isNewTask)
             {
-                allTasks = allTasks.Where(t => t.TaskID != modifiedTask.TaskID).ToList();
+                allTasks = allTasks.Where(t => t.ProjectTaskId != modifiedTask.ProjectTaskId).ToList();
             }
+
             allTasks.Add(modifiedTask);
 
             var latestEndDate = allTasks.Max(t => t.EndDate);
@@ -114,7 +122,7 @@ namespace ConstructionSimulator.Services
                     Type = "Schedule",
                     Severity = "High",
                     Message = $"Task will delay project completion by {result.ScheduleImpactDays} days (new end date: {latestEndDate:yyyy-MM-dd})",
-                    RelatedTaskID = modifiedTask.TaskID,
+                    RelatedTaskID = modifiedTask.ProjectTaskId,
                     RelatedTaskName = modifiedTask.Name
                 });
             }
@@ -138,10 +146,14 @@ namespace ConstructionSimulator.Services
         {
             var result = new SimulationResultViewModel { Success = true };
 
-            var tasks = _dataService.GetTasksByProjectId(modifiedProject.ProjectID);
+            var tasks = _context.Tasks
+                .Where(t => t.ProjectId == modifiedProject.ProjectId)
+                .ToList();
 
             // Check if any tasks fall outside new project dates
-            var tasksOutsideRange = tasks.Where(t => t.StartDate < modifiedProject.StartDate || t.EndDate > modifiedProject.EndDate).ToList();
+            var tasksOutsideRange = tasks
+                .Where(t => t.StartDate < modifiedProject.StartDate || t.EndDate > modifiedProject.EndDate)
+                .ToList();
 
             if (tasksOutsideRange.Any())
             {
@@ -149,7 +161,7 @@ namespace ConstructionSimulator.Services
                 {
                     Type = "Schedule",
                     Severity = "Critical",
-                    Message = $"{tasksOutsideRange.Count} task(s) fall outside the new project timeline",
+                    Message = $"{tasksOutsideRange.Count} task(s) fall outside the new project timeline"
                 });
             }
 
@@ -161,7 +173,7 @@ namespace ConstructionSimulator.Services
                 {
                     Type = "Budget",
                     Severity = "Critical",
-                    Message = $"Current tasks cost (${totalTaskCost:N2}) exceeds new budget (${modifiedProject.Budget:N2})",
+                    Message = $"Current tasks cost (${totalTaskCost:N2}) exceeds new budget (${modifiedProject.Budget:N2})"
                 });
             }
 
@@ -172,9 +184,11 @@ namespace ConstructionSimulator.Services
             return result;
         }
 
-        public List<Models.Task> CalculateCriticalPath(int projectId)
+        public List<ProjectTask> CalculateCriticalPath(int projectId)
         {
-            var tasks = _dataService.GetTasksByProjectId(projectId);
+            var tasks = _context.Tasks
+                .Where(t => t.ProjectId == projectId)
+                .ToList();
 
             return tasks
                 .Where(t => t.Priority == "Critical" || t.Priority == "High")

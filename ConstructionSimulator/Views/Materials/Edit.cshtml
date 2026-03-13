@@ -1,0 +1,59 @@
+﻿@model ConstructionSimulator.Models.Material
+
+@{
+    ViewData["Title"] = "Edit Material";
+}
+
+<div class="container mt-4">
+    <h2>Edit Material</h2>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="MaterialId" />
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <input asp-for="Description" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Quantity" class="form-label"></label>
+            <input asp-for="Quantity" class="form-control" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="UnitType" class="form-label"></label>
+            <input asp-for="UnitType" class="form-control" />
+            <span asp-validation-for="UnitType" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CostPerUnit" class="form-label"></label>
+            <input asp-for="CostPerUnit" class="form-control" />
+            <span asp-validation-for="CostPerUnit" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="LeadTimeDays" class="form-label"></label>
+            <input asp-for="LeadTimeDays" class="form-control" />
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="InStock" class="form-check-input" />
+            <label asp-for="InStock" class="form-check-label"></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}   

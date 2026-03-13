@@ -4,7 +4,7 @@ namespace ConstructionSimulator.Models
 {
     public class Project
     {
-        public int ProjectID { get; set; }
+        public int ProjectId { get; set; }
 
         [Required]
         [StringLength(200)]
@@ -29,7 +29,7 @@ namespace ConstructionSimulator.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         // Navigation property
-        public List<Task> Tasks { get; set; } = new List<Task>();
+        public List<ProjectTask> Tasks { get; set; } = new List<ProjectTask>();
 
         // Calculated properties
         public int TotalDays => (EndDate - StartDate).Days;

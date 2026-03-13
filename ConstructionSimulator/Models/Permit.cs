@@ -4,7 +4,7 @@ namespace ConstructionSimulator.Models
 {
     public class Permit
     {
-        public int PermitID { get; set; }
+        public int PermitId { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -27,7 +27,7 @@ namespace ConstructionSimulator.Models
         public string? Notes { get; set; }
 
         // Navigation property
-        public List<Task> RelatedTasks { get; set; } = new List<Task>();
+        public List<ProjectTask> RelatedTasks { get; set; } = new List<ProjectTask>();
 
         // Calculated properties
         public bool IsApproved => Status == "Approved";

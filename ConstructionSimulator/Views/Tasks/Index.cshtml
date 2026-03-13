@@ -1,6 +1,6 @@
-﻿@model List<Project>
+﻿@model List<ProjectTask>
 @{
-    ViewData["Title"] = "Projects";
+    ViewData["Title"] = "Tasks";
 }
 
 <style>
@@ -15,7 +15,6 @@
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     }
 
-    /* ==================== PAGE HEADER ==================== */
     .page-header {
         background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(88, 47, 192) 50%, rgb(68, 21, 182) 100%);
         color: white;
@@ -55,7 +54,12 @@
         margin: 0;
     }
 
-    /* ==================== CONTENT HEADER ==================== */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
     .content-header {
         display: flex;
         justify-content: space-between;
@@ -94,15 +98,14 @@
         text-decoration: none;
     }
 
-/* ==================== PROJECTS GRID ==================== */
-    .projects-grid {
+    .tasks-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 2rem;
         margin-bottom: 3rem;
     }
 
-    .project-card {
+    .task-card {
         background: white;
         border-radius: 1.25rem;
         overflow: hidden;
@@ -113,7 +116,7 @@
         flex-direction: column;
     }
 
-    .project-card::before {
+    .task-card::before {
         content: '';
         position: absolute;
         top: 0;
@@ -123,44 +126,99 @@
         background: linear-gradient(90deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
     }
 
-    .project-card:hover {
+    .task-card:hover {
         transform: translateY(-12px);
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
         border-color: rgba(107, 70, 210, 0.2);
     }
 
-    .project-header {
-        padding: 2rem;
+    .task-header {
+        padding: 1.5rem;
         background: linear-gradient(135deg, rgb(249, 250, 251) 0%, rgb(243, 244, 246) 100%);
         border-bottom: 1px solid rgba(229, 231, 235, 0.5);
         position: relative;
     }
 
-    .project-name {
-        font-size: 1.35rem;
+    .task-name {
+        font-size: 1.15rem;
         font-weight: 800;
         color: rgb(31, 41, 55);
         margin-bottom: 0.75rem;
     }
 
-    .project-description {
-        font-size: 0.95rem;
-        color: rgb(107, 114, 128);
-        line-height: 1.5;
-        margin-bottom: 1rem;
+    .task-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
     }
 
-    .project-status {
+    .task-info {
+        margin-bottom: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: rgb(107, 114, 128);
+    }
+
+    .info-value {
+        color: rgb(31, 41, 55);
+        font-weight: 700;
+    }
+
+    .priority-badge {
         display: inline-block;
-        padding: 0.5rem 1rem;
+        padding: 0.4rem 0.875rem;
         border-radius: 0.5rem;
         font-weight: 700;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
 
-    .status-planning {
+    .priority-critical {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
+        color: rgb(185, 28, 28);
+    }
+
+    .priority-high {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%);
+        color: rgb(180, 83, 9);
+    }
+
+    .priority-medium {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.2) 100%);
+        color: rgb(37, 99, 235);
+    }
+
+    .priority-low {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 204, 159, 0.2) 100%);
+        color: rgb(5, 150, 105);
+    }
+
+    .task-status {
+        display: inline-block;
+        padding: 0.4rem 0.875rem;
+        border-radius: 0.5rem;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-pending {
         background: rgb(243, 244, 246);
         color: rgb(55, 65, 81);
     }
@@ -175,85 +233,20 @@
         color: rgb(5, 150, 105);
     }
 
-    .project-body {
-        padding: 2rem;
-        flex-grow: 1;
+    .status-blocked {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
+        color: rgb(185, 28, 28);
+    }
+
+    .task-actions {
         display: flex;
-        flex-direction: column;
-    }
-
-    .project-info {
-        margin-bottom: 1.5rem;
-    }
-
-    .info-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 1.25rem;
-        padding-bottom: 1.25rem;
-        border-bottom: 1px solid rgba(229, 231, 235, 0.5);
-    }
-
-    .info-row:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-    }
-
-    .info-label {
-        font-weight: 700;
-        color: rgb(107, 114, 128);
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .info-value {
-        font-weight: 700;
-        color: rgb(31, 41, 55);
-        font-size: 1.1rem;
-    }
-
-    .progress-container {
-        margin-bottom: 1.5rem;
-    }
-
-    .progress-label {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.75rem;
-        font-size: 0.9rem;
-        font-weight: 600;
-    }
-
-    .progress-bar {
-        background: rgb(229, 231, 235);
-        height: 28px;
-        border-radius: 0.75rem;
-        overflow: hidden;
-    }
-
-    .progress-fill {
-        background: linear-gradient(90deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 700;
-        font-size: 0.8rem;
-        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .project-actions {
-        display: flex;
-        gap: 1rem;
+        gap: 0.75rem;
         margin-top: auto;
     }
 
     .btn-view {
         flex: 1;
-        padding: 0.75rem;
+        padding: 0.6rem;
         background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
         color: white;
         border: none;
@@ -262,6 +255,7 @@
         cursor: pointer;
         text-decoration: none;
         text-align: center;
+        font-size: 0.85rem;
         transition: all 0.3s ease;
     }
 
@@ -270,25 +264,6 @@
         box-shadow: 0 4px 12px rgba(107, 70, 210, 0.3);
     }
 
-    .btn-edit {
-        flex: 1;
-        padding: 0.75rem;
-        background: rgb(229, 231, 235);
-        color: rgb(107, 70, 210);
-        border: none;
-        border-radius: 0.5rem;
-        font-weight: 700;
-        cursor: pointer;
-        text-decoration: none;
-        text-align: center;
-        transition: all 0.3s ease;
-    }
-
-    .btn-edit:hover {
-        background: rgb(209, 213, 219);
-    }
-
-    /* ==================== EMPTY STATE ==================== */
     .empty-state {
         text-align: center;
         padding: 4rem 2rem;
@@ -317,14 +292,6 @@
         margin-bottom: 2rem;
     }
 
-    /* ==================== CONTAINER ==================== */
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 2rem;
-    }
-
-    /* ==================== RESPONSIVE ==================== */
     @@media (max-width: 768px) {
         .page-header h1 {
             font-size: 1.75rem;
@@ -340,28 +307,15 @@
             justify-content: center;
         }
 
-        .filter-group {
+        .tasks-grid {
             grid-template-columns: 1fr;
         }
 
-        .filter-buttons {
+        .task-actions {
             flex-direction: column;
         }
 
-        .btn-filter {
-            width: 100%;
-        }
-
-        .projects-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .project-actions {
-            flex-direction: column;
-        }
-
-        .btn-view,
-        .btn-edit {
+        .btn-view {
             width: 100%;
         }
     }
@@ -369,58 +323,63 @@
 
 <div class="page-header">
     <div class="container">
-        <h1><i class="bi bi-folder-check"></i> Projects</h1>
-        <p>Manage and monitor all your construction projects</p>
+        <h1><i class="bi bi-list-check"></i> All Tasks</h1>
+        <p>Manage and track all your project tasks</p>
     </div>
 </div>
 
 <div class="container">
-    <!-- Header with Create Button -->
+    <!-- Header -->
     <div class="content-header">
-        <h2 class="content-title">All Projects</h2>
-        <a asp-controller="Projects" asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> New Project
+        <h2 class="content-title">Tasks Overview</h2>
+        <a asp-controller="Projects" asp-action="Index" class="btn-primary">
+            <i class="bi bi-arrow-left"></i> Back to Projects
         </a>
     </div>
 
-
-
-    <!-- Projects Grid -->
+    <!-- Tasks Grid -->
     @if (Model.Any())
     {
-        <div class="projects-grid">
-            @foreach (var project in Model)
+        <div class="tasks-grid">
+            @foreach (var task in Model)
             {
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3 class="project-name">@project.Name</h3>
-                        <p class="project-description">@project.Description</p>
-                        <span class="project-status status-@(project.Status == "Planning" ? "planning" : project.Status == "In Progress" ? "in-progress" : "completed")">
-                            @project.Status
-                        </span>
+                <div class="task-card">
+                    <div class="task-header">
+                        <h3 class="task-name">@task.Name</h3>
                     </div>
 
-                    <div class="project-body">
-                        <div class="project-info">
-                            <div class="info-row">
-                                <span class="info-label">Budget</span>
-                                <span class="info-value">$@project.Budget.ToString("N0")</span>
+                    <div class="task-body">
+                        <div class="task-info">
+                            <div class="info-item">
+                                <span class="info-label">Priority</span>
+                                <span class="priority-badge priority-@(task.Priority.ToLower())">
+                                    @task.Priority
+                                </span>
                             </div>
-                            <div class="info-row">
+                            <div class="info-item">
+                                <span class="info-label">Status</span>
+                                <span class="task-status status-@(task.Status == "Pending" ? "pending" : task.Status == "In Progress" ? "in-progress" : task.Status == "Completed" ? "completed" : "blocked")">
+                                    @task.Status
+                                </span>
+                            </div>
+                            <div class="info-item">
                                 <span class="info-label">Start Date</span>
-                                <span class="info-value">@project.StartDate.ToString("MMM dd, yyyy")</span>
+                                <span class="info-value">@task.StartDate.ToString("MMM dd")</span>
                             </div>
-                            <div class="info-row">
+                            <div class="info-item">
                                 <span class="info-label">End Date</span>
-                                <span class="info-value">@project.EndDate.ToString("MMM dd, yyyy")</span>
+                                <span class="info-value">@task.EndDate.ToString("MMM dd")</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Cost</span>
+                                <span class="info-value">$@task.Cost.ToString("N0")</span>
                             </div>
                         </div>
 
-
-
-                        <div class="project-actions">
-                            <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.ProjectId" class="btn-view">View Details</a>
-                            <a asp-controller="Projects" asp-action="Edit" asp-route-id="@project.ProjectId" class="btn-edit">Edit</a>
+                        <div class="task-actions">
+                            <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@task.ProjectTaskId" class="btn-view">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -430,11 +389,11 @@
     else
     {
         <div class="empty-state">
-            <div class="empty-icon">📁</div>
-            <h2 class="empty-title">No Projects Yet</h2>
-            <p class="empty-text">Get started by creating your first construction project</p>
-            <a asp-controller="Projects" asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Create First Project
+            <div class="empty-icon">✓</div>
+            <h2 class="empty-title">No Tasks Found</h2>
+            <p class="empty-text">No tasks have been created yet. Create a project and add tasks to get started.</p>
+            <a asp-controller="Projects" asp-action="Index" class="btn-primary">
+                <i class="bi bi-arrow-left"></i> Back to Projects
             </a>
         </div>
     }

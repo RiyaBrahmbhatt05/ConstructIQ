@@ -3,217 +3,762 @@
     ViewData["Title"] = "Dashboard";
 }
 
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: linear-gradient(135deg, rgb(249, 250, 251) 0%, rgb(243, 244, 246) 100%);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        color: rgb(31, 41, 55);
+    }
+
+    /* ==================== HEADER ==================== */
+    .page-header {
+        background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(88, 47, 192) 50%, rgb(68, 21, 182) 100%);
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(107, 70, 210, 0.3);
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: 10%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .page-header .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .page-header h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 0.75rem;
+        letter-spacing: -1px;
+    }
+
+    .page-header .lead {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+    .header-subtitle {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1rem;
+        font-size: 0.95rem;
+        opacity: 0.85;
+    }
+
+    /* ==================== STAT CARDS ==================== */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(229, 231, 235, 0.5);
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
+    }
+
+    .stat-card.stat-blue::before {
+        background: linear-gradient(90deg, rgb(59, 130, 246) 0%, rgb(91, 200, 255) 100%);
+    }
+
+    .stat-card.stat-green::before {
+        background: linear-gradient(90deg, rgb(16, 185, 129) 0%, rgb(5, 204, 159) 100%);
+    }
+
+    .stat-card.stat-orange::before {
+        background: linear-gradient(90deg, rgb(245, 158, 11) 0%, rgb(251, 146, 60) 100%);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        border-color: rgba(107, 70, 210, 0.2);
+    }
+
+    .stat-card-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        background: linear-gradient(135deg, rgba(107, 70, 210, 0.1) 0%, rgba(107, 70, 210, 0.05) 100%);
+        margin-bottom: 1rem;
+    }
+
+    .stat-card.stat-blue .stat-card-icon {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    }
+
+    .stat-card.stat-green .stat-card-icon {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+    }
+
+    .stat-card.stat-orange .stat-card-icon {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: rgb(107, 114, 128);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: rgb(31, 41, 55);
+        margin-bottom: 0.75rem;
+        line-height: 1;
+    }
+
+    .stat-change {
+        font-size: 0.85rem;
+        color: rgb(107, 114, 128);
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    /* ==================== SECTION HEADER ==================== */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: rgb(31, 41, 55);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .section-title-icon {
+        font-size: 1.75rem;
+    }
+
+    /* ==================== CARDS ==================== */
+    .card {
+        background: white;
+        border-radius: 1rem;
+        overflow: hidden;
+        border: 1px solid rgba(229, 231, 235, 0.5);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        border-color: rgba(107, 70, 210, 0.2);
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, rgb(249, 250, 251) 0%, rgb(243, 244, 246) 100%);
+        padding: 2rem;
+        border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-header-content h5 {
+        font-weight: 800;
+        color: rgb(31, 41, 55);
+        margin: 0;
+        font-size: 1.25rem;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    /* ==================== BUTTONS ==================== */
+    .btn-primary {
+        background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
+        border: none;
+        color: white;
+        font-weight: 700;
+        padding: 0.65rem 1.75rem;
+        border-radius: 0.6rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(107, 70, 210, 0.3);
+        cursor: pointer;
+        font-size: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(107, 70, 210, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-sm {
+        padding: 0.5rem 1.25rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-outline-primary {
+        color: rgb(107, 70, 210);
+        border: 2px solid rgb(107, 70, 210);
+        background: white;
+        font-weight: 700;
+        padding: 0.5rem 1.25rem;
+        border-radius: 0.6rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 0.85rem;
+    }
+
+    .btn-outline-primary:hover {
+        background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
+        color: white;
+        border-color: transparent;
+        box-shadow: 0 4px 15px rgba(107, 70, 210, 0.3);
+    }
+
+    /* ==================== TABLES ==================== */
+    .table {
+        margin-bottom: 0;
+        width: 100%;
+    }
+
+    .table thead {
+        background: linear-gradient(135deg, rgb(249, 250, 251) 0%, rgb(243, 244, 246) 100%);
+        border-bottom: 2px solid rgba(229, 231, 235, 0.8);
+    }
+
+    .table th {
+        font-weight: 800;
+        color: rgb(107, 114, 128);
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        font-size: 0.8rem;
+        padding: 1.25rem;
+        border: none;
+    }
+
+    .table td {
+        padding: 1.25rem;
+        border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+        color: rgb(31, 41, 55);
+    }
+
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .table tbody tr:hover {
+        background: linear-gradient(90deg, rgba(107, 70, 210, 0.02) 0%, rgba(124, 81, 229, 0.02) 100%);
+        cursor: pointer;
+    }
+
+    .table-responsive {
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    /* ==================== STATUS BADGES ==================== */
+    .status-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+    }
+
+    .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        display: inline-block;
+    }
+
+    /* ==================== PROGRESS BAR ==================== */
+    .progress {
+        background: linear-gradient(90deg, rgb(229, 231, 235) 0%, rgb(243, 244, 246) 100%);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        height: 28px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
+        color: white;
+        font-weight: 700;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 10px rgba(107, 70, 210, 0.3);
+    }
+
+    /* ==================== LIST GROUP ==================== */
+    .list-group-item {
+        border: 1px solid rgba(229, 231, 235, 0.5);
+        padding: 1.25rem;
+        margin-bottom: 0.75rem;
+        border-radius: 0.75rem;
+        background: white;
+        transition: all 0.3s ease;
+    }
+
+    .list-group-item:hover {
+        border-color: rgba(107, 70, 210, 0.3);
+        box-shadow: 0 4px 12px rgba(107, 70, 210, 0.1);
+        transform: translateX(4px);
+    }
+
+    .list-group-item h6 {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: rgb(31, 41, 55);
+    }
+
+    .list-group-item small {
+        color: rgb(107, 114, 128);
+        font-weight: 500;
+    }
+
+    /* ==================== EMPTY STATE ==================== */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: rgb(107, 114, 128);
+    }
+
+    .empty-state-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+
+    .empty-state-text {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        color: rgb(107, 114, 128);
+        font-weight: 500;
+    }
+
+    /* ==================== CONFLICT ALERT ==================== */
+    .conflict-alert {
+        background: linear-gradient(135deg, rgb(245, 158, 11) 0%, rgb(217, 119, 6) 100%);
+        color: white;
+        border-radius: 1rem;
+    }
+
+    .conflict-alert .card-header {
+        background: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 2rem;
+    }
+
+    .conflict-alert h5 {
+        color: white;
+    }
+
+    /* ==================== TEXT COLORS ==================== */
+    .text-muted {
+        color: rgb(107, 114, 128) !important;
+    }
+
+    .text-primary {
+        color: rgb(107, 70, 210) !important;
+    }
+
+    .text-success {
+        color: rgb(16, 185, 129) !important;
+    }
+
+    .text-warning {
+        color: rgb(245, 158, 11) !important;
+    }
+
+    .text-danger {
+        color: rgb(239, 68, 68) !important;
+    }
+
+    /* ==================== BACKGROUND COLORS ==================== */
+    .bg-primary {
+        background-color: rgb(107, 70, 210) !important;
+    }
+
+    .bg-success {
+        background-color: rgb(16, 185, 129) !important;
+    }
+
+    .bg-warning {
+        background-color: rgb(245, 158, 11) !important;
+    }
+
+    .bg-danger {
+        background-color: rgb(239, 68, 68) !important;
+    }
+
+    .bg-info {
+        background-color: rgb(59, 130, 246) !important;
+    }
+
+    .bg-secondary {
+        background-color: rgb(107, 114, 128) !important;
+    }
+
+    .bg-light {
+        background-color: rgb(249, 250, 251) !important;
+    }
+
+    /* ==================== UTILITY ==================== */
+    .mb-4 {
+        margin-bottom: 2rem;
+    }
+
+    .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+
+    .me-2 {
+        margin-right: 0.5rem;
+    }
+
+    .d-flex {
+        display: flex;
+    }
+
+    .justify-content-between {
+        justify-content: space-between;
+    }
+
+    .align-items-center {
+        align-items: center;
+    }
+
+    .align-items-start {
+        align-items: flex-start;
+    }
+
+    .flex-grow-1 {
+        flex-grow: 1;
+    }
+
+    .gap-2 {
+        gap: 0.5rem;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @@media (max-width: 768px) {
+        .page-header {
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.75rem;
+        }
+
+        .page-header .lead {
+            font-size: 1rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+        }
+
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
 <div class="page-header">
     <div class="container">
-        <h1 class="display-4"><i class="bi bi-speedometer2"></i> Project Dashboard</h1>
+        <h1><i class="bi bi-speedometer2"></i> Project Dashboard</h1>
         <p class="lead">Construction Intelligence Platform</p>
+        <div class="header-subtitle">
+            <span><i class="bi bi-calendar-check"></i> Real-time Project Monitoring</span>
+            <span>•</span>
+            <span><i class="bi bi-graph-up"></i> Advanced Analytics</span>
+        </div>
     </div>
 </div>
 
 <div class="container">
     <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card stat-card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-2">Total Projects</h6>
-                            <h2 class="mb-0">@Model.TotalProjects</h2>
-                        </div>
-                        <div class="text-primary">
-                            <i class="bi bi-folder-fill" style="font-size: 2.5rem;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card-icon">📊</div>
+            <div class="stat-label">Total Projects</div>
+            <div class="stat-value">@Model.TotalProjects</div>
+            <div class="stat-change"><i class="bi bi-folder-fill"></i> Active in portfolio</div>
         </div>
 
-        <div class="col-md-3">
-            <div class="card stat-card success">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-2">Active Projects</h6>
-                            <h2 class="mb-0">@Model.ActiveProjects</h2>
-                        </div>
-                        <div class="text-success">
-                            <i class="bi bi-activity" style="font-size: 2.5rem;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="stat-card stat-blue">
+            <div class="stat-card-icon">⚡</div>
+            <div class="stat-label">Active Projects</div>
+            <div class="stat-value">@Model.ActiveProjects</div>
+            <div class="stat-change"><i class="bi bi-play-circle-fill"></i> Currently running</div>
         </div>
 
-        <div class="col-md-3">
-            <div class="card stat-card warning">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-2">Total Budget</h6>
-                            <h2 class="mb-0">$@Model.TotalBudget.ToString("N0")</h2>
-                        </div>
-                        <div class="text-warning">
-                            <i class="bi bi-cash-stack" style="font-size: 2.5rem;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="stat-card stat-green">
+            <div class="stat-card-icon">💰</div>
+            <div class="stat-label">Total Budget</div>
+            <div class="stat-value">$@Model.TotalBudget.ToString("N0")</div>
+            <div class="stat-change"><i class="bi bi-cash-stack"></i> Allocated funds</div>
         </div>
 
-        <div class="col-md-3">
-            <div class="card stat-card danger">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-2">Overdue Tasks</h6>
-                            <h2 class="mb-0">@Model.OverdueTasks</h2>
-                        </div>
-                        <div class="text-danger">
-                            <i class="bi bi-exclamation-triangle-fill" style="font-size: 2.5rem;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="stat-card stat-orange">
+            <div class="stat-card-icon">⚠️</div>
+            <div class="stat-label">Overdue Tasks</div>
+            <div class="stat-value">@Model.OverdueTasks</div>
+            <div class="stat-change"><i class="bi bi-exclamation-circle"></i> Require attention</div>
         </div>
     </div>
 
     <!-- Conflicts Alert -->
     @if (Model.Conflicts.Any())
     {
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card border-warning">
-                    <div class="card-header bg-warning text-dark">
-                        <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Active Conflicts (@Model.Conflicts.Count)</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="list-group list-group-flush">
-                            @foreach (var conflict in Model.Conflicts.Take(5))
-                            {
-                                <div class="list-group-item">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <div>
-                                            <span class="badge bg-@(conflict.Severity == "Critical" ? "danger" : conflict.Severity == "High" ? "warning" : "info") me-2">
-                                                @conflict.Severity
-                                            </span>
-                                            <span class="badge bg-secondary me-2">@conflict.Type</span>
-                                            <span>@conflict.Message</span>
-                                        </div>
-                                        <small class="text-muted">@conflict.DetectedDate.ToString("MMM dd, yyyy")</small>
+        <div class="mb-4">
+            <div class="card conflict-alert">
+                <div class="card-header">
+                    <h5><i class="bi bi-exclamation-triangle"></i> Active Conflicts (@Model.Conflicts.Count)</h5>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; gap: 1rem;">
+                        @foreach (var conflict in Model.Conflicts.Take(5))
+                        {
+                            <div class="list-group-item" style="background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(255, 255, 255, 0.3);">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div style="flex-grow: 1;">
+                                        <span class="badge bg-@(conflict.Severity == "Critical" ? "danger" : conflict.Severity == "High" ? "warning" : "info") me-2">
+                                            @conflict.Severity
+                                        </span>
+                                        <span class="badge bg-secondary me-2">@conflict.Type</span>
+                                        <span>@conflict.Message</span>
                                     </div>
+                                    <small class="text-muted">@conflict.DetectedDate.ToString("MMM dd, yyyy")</small>
                                 </div>
-                            }
-                        </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
         </div>
     }
 
-    <div class="row">
+    <!-- Main Content Grid -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem;">
         <!-- Recent Projects -->
-        <div class="col-md-8 mb-4">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-folder"></i> Recent Projects</h5>
-                    <a asp-controller="Projects" asp-action="Create" class="btn btn-primary btn-sm">
-                        <i class="bi bi-plus-circle"></i> New Project
-                    </a>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-header-content">
+                    <h5><i class="bi bi-folder-check"></i> Recent Projects</h5>
                 </div>
-                <div class="card-body">
-                    @if (Model.RecentProjects.Any())
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Project Name</th>
-                                        <th>Status</th>
-                                        <th>Budget</th>
-                                        <th>Progress</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var project in Model.RecentProjects)
-                                    {
-                                        <tr onclick="window.location='@Url.Action("Details", "Projects", new { id = project.ProjectID })'">
-                                            <td>
-                                                <strong>@project.Name</strong><br />
-                                                <small class="text-muted">@project.Description</small>
-                                            </td>
-                                            <td>
-                                                <span class="status-badge bg-@(project.Status == "Completed" ? "success" : project.Status == "In Progress" ? "primary" : "secondary")">
-                                                    @project.Status
-                                                </span>
-                                            </td>
-                                            <td>
-                                                $@project.Budget.ToString("N0")<br />
-                                                <small class="@(project.IsOverBudget ? "text-danger" : "text-muted")">
-                                                    @project.BudgetUtilization.ToString("F1")% used
-                                                </small>
-                                            </td>
-                                            <td>
-                                                <div class="progress" style="height: 20px;">
-                                                    <div class="progress-bar bg-@(project.BudgetUtilization > 90 ? "danger" : "success")"
-                                                         style="width: @Math.Min(project.BudgetUtilization, 100)%">
-                                                        @project.BudgetUtilization.ToString("F0")%
-                                                    </div>
+                <a asp-controller="Projects" asp-action="Create" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle"></i> New Project
+                </a>
+            </div>
+            <div class="card-body">
+                @if (Model.RecentProjects.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Project Name</th>
+                                    <th>Status</th>
+                                    <th>Budget</th>
+                                    <th>Progress</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var project in Model.RecentProjects)
+                                {
+                                    <tr onclick="window.location='@Url.Action("Details", "Projects", new { id = project.ProjectId })'">
+                                        <td>
+                                            <div>
+                                                <strong>@project.Name</strong>
+                                            </div>
+                                            <small class="text-muted">@project.Description</small>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge bg-@(project.Status == "Completed" ? "success" : project.Status == "In Progress" ? "primary" : "secondary")">
+                                                @project.Status
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div><strong>$@project.Budget.ToString("N0")</strong></div>
+                                            <small class="@(project.IsOverBudget ? "text-danger" : "text-muted")">
+                                                @project.BudgetUtilization.ToString("F1")% used
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 24px;">
+                                                <div class="progress-bar bg-@(project.BudgetUtilization > 90 ? "danger" : "success")"
+                                                     style="width: @Math.Min(project.BudgetUtilization, 100)%">
+                                                    @project.BudgetUtilization.ToString("F0")%
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.ProjectID"
-                                                   class="btn btn-sm btn-outline-primary">View</a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-center text-muted py-4">No projects yet. Create your first project to get started!</p>
-                    }
-                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.ProjectId"
+                                               class="btn btn-outline-primary btn-sm">View</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📁</div>
+                        <div class="empty-state-text">No projects yet</div>
+                        <p style="font-size: 0.9rem; color: rgb(107, 114, 128);">Create your first project to get started with the platform</p>
+                    </div>
+                }
             </div>
         </div>
 
         <!-- Upcoming Tasks -->
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Upcoming Tasks</h5>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-header-content">
+                    <h5><i class="bi bi-calendar-event"></i> Upcoming Tasks</h5>
                 </div>
-                <div class="card-body">
-                    @if (Model.UpcomingTasks.Any())
+            </div>
+            <div class="card-body">
+                @if (Model.UpcomingTasks.Any())
+                {
+                    @foreach (var task in Model.UpcomingTasks)
                     {
-                        <div class="list-group list-group-flush">
-                            @foreach (var task in Model.UpcomingTasks)
-                            {
-                                <div class="list-group-item px-0">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <div class="flex-grow-1">
-                                            <h6 class="mb-1">@task.Name</h6>
-                                            <small class="text-muted">
-                                                <i class="bi bi-calendar"></i> @task.StartDate.ToString("MMM dd, yyyy")
-                                            </small>
-                                        </div>
-                                        <span class="badge bg-@(task.Priority == "Critical" ? "danger" : task.Priority == "High" ? "warning" : "info")">
-                                            @task.Priority
-                                        </span>
-                                    </div>
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6>@task.Name</h6>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar"></i> @task.StartDate.ToString("MMM dd, yyyy")
+                                    </small>
                                 </div>
-                            }
+                                <span class="badge bg-@(task.Priority == "Critical" ? "danger" : task.Priority == "High" ? "warning" : "info")">
+                                    @task.Priority
+                                </span>
+                            </div>
                         </div>
                     }
-                    else
-                    {
-                        <p class="text-center text-muted py-3">No upcoming tasks</p>
-                    }
-                </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✓</div>
+                        <div class="empty-state-text">No upcoming tasks</div>
+                        <p style="font-size: 0.9rem; color: rgb(107, 114, 128);">All caught up!</p>
+                    </div>
+                }
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    @@media (max-width: 1024px) {
+        .grid-2col {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>

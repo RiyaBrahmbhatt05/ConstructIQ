@@ -1,5 +1,48 @@
-﻿namespace ConstructionSimulator.ViewModels
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace ConstructionSimulator.ViewModels
 {
+    public class LoginViewModel
+    {
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email address")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Password is required")]
+        [StringLength(256, MinimumLength = 6,
+            ErrorMessage = "Password must be between 6 and 256 characters")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [Display(Name = "Remember Me")]
+        public bool RememberMe { get; set; }
+    }
+
+    public class RegisterViewModel
+    {
+        [Required(ErrorMessage = "Full Name is required")]
+        [StringLength(256, MinimumLength = 2,
+            ErrorMessage = "Name must be between 2 and 256 characters")]
+        [Display(Name = "Full Name")]
+        public string FullName { get; set; }
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email address")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Password is required")]
+        [StringLength(256, MinimumLength = 6,
+            ErrorMessage = "Password must be at least 6 characters")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "Passwords do not match")]
+        public string ConfirmPassword { get; set; }
+    }
+
     public class DashboardViewModel
     {
         public int TotalProjects { get; set; }
@@ -12,14 +55,14 @@
         public int OverdueTasks { get; set; }
 
         public List<Models.Project> RecentProjects { get; set; } = new List<Models.Project>();
-        public List<Models.Task> UpcomingTasks { get; set; } = new List<Models.Task>();
+        public List<Models.ProjectTask> UpcomingTasks { get; set; } = new List<Models.ProjectTask>();
         public List<ConflictAlert> Conflicts { get; set; } = new List<ConflictAlert>();
     }
 
     public class ProjectDetailsViewModel
     {
         public Models.Project? Project { get; set; }
-        public List<Models.Task> Tasks { get; set; } = new List<Models.Task>();
+        public List<Models.ProjectTask> Tasks { get; set; } = new List<Models.ProjectTask>();
         public List<Models.Crew> AvailableCrews { get; set; } = new List<Models.Crew>();
         public List<Models.Permit> Permits { get; set; } = new List<Models.Permit>();
         public decimal TotalProjectCost { get; set; }

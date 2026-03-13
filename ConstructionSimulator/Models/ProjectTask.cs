@@ -2,12 +2,12 @@
 
 namespace ConstructionSimulator.Models
 {
-    public class Task
+    public class ProjectTask
     {
-        public int TaskID { get; set; }
+        public int ProjectTaskId { get; set; }
 
         [Required]
-        public int ProjectID { get; set; }
+        public int ProjectId { get; set; }
 
         [Required]
         [StringLength(200)]
@@ -28,16 +28,16 @@ namespace ConstructionSimulator.Models
         [Range(0, double.MaxValue)]
         public decimal Cost { get; set; }
 
-        public int? CrewID { get; set; }
+        public int? CrewId { get; set; }
 
         public string Status { get; set; } = "Pending"; // Pending, In Progress, Completed, Blocked
 
         public string Priority { get; set; } = "Medium"; // Low, Medium, High, Critical
 
-        // Dependencies (comma-separated TaskIDs)
+        // Dependencies (comma-separated TaskId)
         public string? Dependencies { get; set; }
 
-        public int? PermitID { get; set; }
+        public int? PermitId { get; set; }
 
         public bool RequiresPermit { get; set; } = false;
 

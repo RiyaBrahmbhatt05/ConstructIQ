@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ConstructionSimulator.Models.Material>
+
+@{
+    ViewData["Title"] = "Materials";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Materials</h2>
+        <a asp-action="Create" class="btn btn-primary">Add Material</a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Cost Per Unit</th>
+                <th>Unit Type</th>
+                <th>Quantity</th>
+                <th>In Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var material in Model)
+            {
+                <tr>
+                    <td>@material.Name</td>
+                    <td>@material.CostPerUnit.ToString("N2")</td>
+                    <td>@material.UnitType</td>
+                    <td>@material.Quantity</td>
+                    <td>@(material.InStock ? "Yes" : "No")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@material.MaterialId" class="btn btn-sm btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@material.MaterialId" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

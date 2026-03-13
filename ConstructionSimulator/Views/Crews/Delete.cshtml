@@ -1,0 +1,29 @@
+﻿@model ConstructionSimulator.Models.Crew
+
+@{
+    ViewData["Title"] = "Delete Crew";
+}
+
+<div class="container mt-4">
+    <h2>Delete Crew</h2>
+    <h4>Are you sure you want to delete this crew?</h4>
+
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-3">Name</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3">Skill Type</dt>
+        <dd class="col-sm-9">@Model.SkillType</dd>
+
+        <dt class="col-sm-3">Hourly Rate</dt>
+        <dd class="col-sm-9">@Model.HourlyRate.ToString("N2")</dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" name="id" value="@Model.CrewId" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

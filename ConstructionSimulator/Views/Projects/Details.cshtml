@@ -1,6 +1,12 @@
 ﻿@model ProjectDetailsViewModel
+
 @{
     ViewData["Title"] = "Project Details";
+
+    decimal expectedCost = ViewBag.ExpectedCost != null ? (decimal)ViewBag.ExpectedCost : 0m;
+    decimal budgetDifference = ViewBag.BudgetDifference != null ? (decimal)ViewBag.BudgetDifference : 0m;
+    bool isOverBudget = ViewBag.IsOverBudget != null ? (bool)ViewBag.IsOverBudget : false;
+    var breakdown = ViewBag.CostBreakdown as Dictionary<string, decimal>;
 }
 
 <div class="page-header">
@@ -20,6 +26,86 @@
 </div>
 
 <div class="container">
+
+    <!-- Budget Overview -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>Budget Overview</h4>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>Project Budget</strong><br />
+                    $@Model.Project.Budget.ToString("N2")
+                </div>
+
+                <div class="col-md-4">
+                    <strong>Expected Cost</strong><br />
+                    $@expectedCost.ToString("N2")
+                </div>
+
+                <div class="col-md-4">
+                    <strong>Remaining Budget</strong><br />
+                    @if (isOverBudget)
+                    {
+                        <span class="text-danger">
+                            $@budgetDifference.ToString("N2")
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-success">
+                            $@budgetDifference.ToString("N2")
+                        </span>
+                    }
+                </div>
+            </div>
+
+            @if (isOverBudget)
+            {
+                <div class="alert alert-danger mt-3">
+                    ⚠ The expected project cost exceeds the allocated project budget.
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Cost Breakdown -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>Cost Breakdown</h4>
+
+            @if (breakdown != null)
+            {
+                <div class="row">
+                    <div class="col-md-3">
+                        <strong>Labor</strong><br />
+                        $@breakdown["Labor"].ToString("N2")
+                    </div>
+
+                    <div class="col-md-3">
+                        <strong>Materials</strong><br />
+                        $@breakdown["Materials"].ToString("N2")
+                    </div>
+
+                    <div class="col-md-3">
+                        <strong>Permits</strong><br />
+                        $@breakdown["Permits"].ToString("N2")
+                    </div>
+
+                    <div class="col-md-3">
+                        <strong>Other</strong><br />
+                        $@breakdown["Other"].ToString("N2")
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">No cost breakdown available yet.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Project Summary Cards -->
     <div class="row mb-4">
         <div class="col-md-3">
             <div class="card">
@@ -32,6 +118,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
@@ -43,6 +130,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
@@ -52,6 +140,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
@@ -69,7 +158,10 @@
             <div class="col-12">
                 <div class="card border-warning">
                     <div class="card-header bg-warning">
-                        <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Project Conflicts (@Model.ProjectConflicts.Count)</h5>
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Project Conflicts (@Model.ProjectConflicts.Count)
+                        </h5>
                     </div>
                     <div class="card-body">
                         @foreach (var conflict in Model.ProjectConflicts)
@@ -84,15 +176,19 @@
         </div>
     }
 
+    <!-- Tasks -->
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-list-task"></i> Project Tasks</h5>
-                    <a asp-controller="Tasks" asp-action="Create" asp-route-projectId="@Model.Project.ProjectID" class="btn btn-primary">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-task"></i> Project Tasks
+                    </h5>
+                    <a asp-controller="Tasks" asp-action="Create" asp-route-projectId="@Model.Project.ProjectId" class="btn btn-primary">
                         <i class="bi bi-plus-circle"></i> Add Task
                     </a>
                 </div>
+
                 <div class="card-body">
                     @if (Model.Tasks.Any())
                     {
@@ -116,11 +212,13 @@
                                         <tr class="@(task.IsDelayed ? "table-danger" : "")">
                                             <td>
                                                 <strong>@task.Name</strong>
+
                                                 @if (!string.IsNullOrEmpty(task.Description))
                                                 {
                                                     <br />
                                                     <small class="text-muted">@task.Description</small>
                                                 }
+
                                                 @if (task.RequiresPermit)
                                                 {
                                                     <br />
@@ -129,23 +227,33 @@
                                                     </span>
                                                 }
                                             </td>
+
                                             <td>
                                                 <small>
                                                     <strong>Start:</strong> @task.StartDate.ToString("MMM dd, yyyy")<br />
                                                     <strong>End:</strong> @task.EndDate.ToString("MMM dd, yyyy")
                                                 </small>
                                             </td>
+
                                             <td>@task.Duration days</td>
-                                            <td><strong>$@task.Cost.ToString("N0")</strong></td>
+
                                             <td>
-                                                @if (task.CrewID.HasValue)
+                                                <strong>$@task.Cost.ToString("N0")</strong>
+                                            </td>
+
+                                            <td>
+                                                @if (task.CrewId.HasValue)
                                                 {
-                                                    var crew = Model.AvailableCrews.FirstOrDefault(c => c.CrewID == task.CrewID.Value);
+                                                    var crew = Model.AvailableCrews.FirstOrDefault(c => c.CrewId == task.CrewId.Value);
                                                     if (crew != null)
                                                     {
                                                         <span>@crew.Name</span>
                                                         <br />
                                                         <small class="text-muted">@crew.SkillType</small>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">Not assigned</span>
                                                     }
                                                 }
                                                 else
@@ -153,22 +261,25 @@
                                                     <span class="text-muted">Not assigned</span>
                                                 }
                                             </td>
+
                                             <td>
                                                 <span class="badge bg-@(task.Status == "Completed" ? "success" : task.Status == "In Progress" ? "primary" : task.Status == "Blocked" ? "danger" : "secondary")">
                                                     @task.Status
                                                 </span>
                                             </td>
+
                                             <td>
                                                 <span class="badge bg-@(task.Priority == "Critical" ? "danger" : task.Priority == "High" ? "warning" : task.Priority == "Medium" ? "info" : "secondary")">
                                                     @task.Priority
                                                 </span>
                                             </td>
+
                                             <td>
                                                 <div class="btn-group btn-group-sm">
-                                                    <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@task.TaskID" class="btn btn-outline-primary">
+                                                    <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@task.ProjectTaskId" class="btn btn-outline-primary">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
-                                                    <a asp-controller="Tasks" asp-action="Delete" asp-route-id="@task.TaskID" class="btn btn-outline-danger">
+                                                    <a asp-controller="Tasks" asp-action="Delete" asp-route-id="@task.ProjectTaskId" class="btn btn-outline-danger">
                                                         <i class="bi bi-trash"></i>
                                                     </a>
                                                 </div>
@@ -184,7 +295,7 @@
                         <div class="text-center py-4">
                             <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
                             <p class="text-muted mt-2">No tasks yet. Add your first task to get started!</p>
-                            <a asp-controller="Tasks" asp-action="Create" asp-route-projectId="@Model.Project.ProjectID" class="btn btn-primary">
+                            <a asp-controller="Tasks" asp-action="Create" asp-route-projectId="@Model.Project.ProjectId" class="btn btn-primary">
                                 <i class="bi bi-plus-circle"></i> Add First Task
                             </a>
                         </div>
@@ -194,16 +305,17 @@
         </div>
     </div>
 
+    <!-- Action Buttons -->
     <div class="row mt-4 mb-5">
         <div class="col-12">
             <div class="btn-group" role="group">
                 <a asp-action="Index" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> Back to Projects
                 </a>
-                <a asp-action="Edit" asp-route-id="@Model.Project.ProjectID" class="btn btn-primary">
+                <a asp-action="Edit" asp-route-id="@Model.Project.ProjectId" class="btn btn-primary">
                     <i class="bi bi-pencil"></i> Edit Project
                 </a>
-                <a asp-action="Delete" asp-route-id="@Model.Project.ProjectID" class="btn btn-danger">
+                <a asp-action="Delete" asp-route-id="@Model.Project.ProjectId" class="btn btn-danger">
                     <i class="bi bi-trash"></i> Delete Project
                 </a>
             </div>

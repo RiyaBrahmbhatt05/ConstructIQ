@@ -4,12 +4,12 @@ namespace ConstructionSimulator.Models
 {
     public class SimulationLog
     {
-        public int LogID { get; set; }
+        public int SimulationLogId { get; set; }
 
         [Required]
-        public int ProjectID { get; set; }
+        public int ProjectId { get; set; }
 
-        public int? TaskID { get; set; }
+        public int? ProjectTaskId { get; set; }
 
         [Required]
         public string User { get; set; } = "System";
