@@ -6,12 +6,128 @@
     <title>@ViewData["Title"] - Construction Simulator</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        :root {
+            --ciq-orange-1: #e7722f;
+            --ciq-orange-2: #c95e22;
+            --ciq-navy: #10212f;
+            --ciq-cream: #f4f1eb;
+            --ciq-text-soft: #d7e0e8;
+        }
+
+        .navbar-ciq {
+            background: linear-gradient(95deg, var(--ciq-orange-1) 0%, var(--ciq-orange-2) 100%);
+            padding: 0.8rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .navbar-brand-ciq {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .navbar-brand-ciq:hover {
+            color: #ffffff;
+        }
+
+        .nav-link-ciq {
+            color: #ffffff;
+            margin: 0 0.55rem;
+            font-weight: 600;
+            border-radius: 0.35rem;
+            transition: background-color 0.25s ease;
+        }
+
+        .nav-link-ciq:hover,
+        .nav-link-ciq:focus {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .ciq-btn-login {
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            padding: 0.4rem 1.1rem;
+            border-radius: 0.375rem;
+            margin: 0 0.25rem;
+            font-weight: 700;
+        }
+
+        .ciq-btn-login:hover,
+        .ciq-btn-login:focus {
+            color: var(--ciq-orange-2);
+            background-color: #ffffff;
+        }
+
+        .ciq-btn-register {
+            background: var(--ciq-navy);
+            color: #ffffff;
+            padding: 0.4rem 1.1rem;
+            margin: 0 0.25rem;
+            border-radius: 0.375rem;
+            font-weight: 700;
+            border: 2px solid var(--ciq-navy);
+        }
+
+        .ciq-btn-register:hover,
+        .ciq-btn-register:focus {
+            color: var(--ciq-navy);
+            background: #ffffff;
+            border-color: #ffffff;
+        }
+
+        .layout-main {
+            min-height: calc(100vh - 100px);
+            padding: 2rem 0;
+            background-color: var(--ciq-cream);
+        }
+
+        .footer-ciq {
+            background: linear-gradient(95deg, var(--ciq-navy) 0%, #1c3648 100%);
+            color: #ffffff;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.9rem;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-ciq a {
+            color: #ffb68a;
+            text-decoration: none;
+        }
+
+        .footer-ciq a:hover {
+            color: #ffd0b1;
+            text-decoration: underline;
+        }
+
+        @@media (max-width: 991.98px) {
+            .navbar-ciq .navbar-collapse {
+                margin-top: 0.75rem;
+                background: rgba(0, 0, 0, 0.08);
+                border-radius: 0.5rem;
+                padding: 0.6rem;
+            }
+
+            .nav-link-ciq,
+            .ciq-btn-login,
+            .ciq-btn-register {
+                margin: 0.25rem 0;
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, rgb(107,70,210) 0%, rgb(124,81,229) 100%); padding: 0.8rem 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-ciq">
         <div class="container-fluid px-4">
-            <a class="navbar-brand" asp-area="" asp-controller="Landing" asp-action="Index" style="font-size: 1.4rem; font-weight: 700; color: white;">
-                🏗️ Construction Simulator
+            <a class="navbar-brand navbar-brand-ciq" asp-area="" asp-controller="Landing" asp-action="Index">
+                Construction Simulator
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -19,24 +135,24 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Landing" asp-action="Index" style="color: white; margin: 0 0.75rem; font-weight: 500;">Home</a>
+                        <a class="nav-link nav-link-ciq" asp-area="" asp-controller="Landing" asp-action="Index">Home</a>
                     </li>
                     @if (Context.Session.GetString("UserEmail") != null)
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index" style="color: white; margin: 0 0.75rem; font-weight: 500;">Dashboard</a>
+                            <a class="nav-link nav-link-ciq" asp-area="" asp-controller="Home" asp-action="Index">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Projects" asp-action="Index" style="color: white; margin: 0 0.75rem; font-weight: 500;">Projects</a>
+                            <a class="nav-link nav-link-ciq" asp-area="" asp-controller="Projects" asp-action="Index">Projects</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Materials" asp-action="Index">Materials</a>
+                            <a class="nav-link nav-link-ciq" asp-controller="Materials" asp-action="Index">Materials</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Crews" asp-action="Index">Crews</a>
+                            <a class="nav-link nav-link-ciq" asp-controller="Crews" asp-action="Index">Crews</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white; margin: 0 0.75rem; font-weight: 500;">
+                            <a class="nav-link nav-link-ciq dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 @{
                                     var userName = Context.Session.GetString("UserName") ?? "User";
                                 }
@@ -52,10 +168,10 @@
                     else
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login" style="color: white; border: 2px solid white; padding: 0.4rem 1.2rem; margin: 0 0.25rem; border-radius: 0.375rem; font-weight: 600;">Login</a>
+                            <a class="nav-link ciq-btn-login" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register" style="background: rgb(91,200,255); color: white; padding: 0.4rem 1.2rem; margin: 0 0.25rem; border-radius: 0.375rem; font-weight: 600; border: none;">Register</a>
+                            <a class="nav-link ciq-btn-register" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
                         </li>
                     }
                 </ul>
@@ -63,7 +179,7 @@
         </div>
     </nav>
 
-    <div style="min-height: calc(100vh - 100px); padding: 2rem 0; background-color: rgb(249,250,251);">
+    <div class="layout-main">
         @{
             var successMessage = TempData["SuccessMessage"] as string;
             var errorMessage = TempData["ErrorMessage"] as string;
@@ -105,9 +221,9 @@
         </div>
     </div>
 
-    <footer style="background: linear-gradient(135deg, rgb(107,70,210) 0%, rgb(124,81,229) 100%); color: white; padding: 2rem 0; margin-top: 3rem; text-align: center; font-size: 0.9rem; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);">
+    <footer class="footer-ciq">
         <div class="container">
-            <p style="margin: 0;">&copy; 2024 Construction Simulator - All rights reserved. | <a href="#" style="color: rgb(91,200,255); text-decoration: none;">Privacy Policy</a> | <a href="#" style="color: rgb(91,200,255); text-decoration: none;">Terms of Service</a></p>
+            <p style="margin: 0;">&copy; 2024 Construction Simulator - All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
         </div>
     </footer>
 

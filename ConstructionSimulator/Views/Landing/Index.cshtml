@@ -1,538 +1,752 @@
-﻿@{
-    ViewData["Title"] = "Welcome to ConstructorIQ";
+@{
+    ViewData["Title"] = "ConstructorIQ | Build With Precision";
 }
 
 <style>
-    * {
-        margin: 0;
-        padding: 0;
+    .landing-shell {
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+        width: 100vw;
+        color: #12202b;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        background: #f4f1eb;
+    }
+
+    .landing-shell * {
         box-sizing: border-box;
     }
 
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        background: white;
-        overflow-x: hidden;
+    .landing-shell .section-wrap {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 0;
     }
 
-    /* ==================== HERO SECTION ==================== */
-    .hero {
-        background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(88, 47, 192) 50%, rgb(68, 21, 182) 100%);
-        color: white;
-        padding: 6rem 0 4rem 0;
+    .landing-shell .eyebrow {
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #c05a22;
+        margin-bottom: 1rem;
+    }
+
+    .landing-shell .headline {
+        font-size: clamp(2rem, 4vw, 4.2rem);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        font-weight: 800;
+        margin-bottom: 1.25rem;
+    }
+
+    .landing-shell .body-text {
+        color: #425363;
+        font-size: 1.05rem;
+        line-height: 1.7;
+    }
+
+    .landing-shell .btn-main,
+    .landing-shell .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.9rem 1.4rem;
+        border-radius: 0.45rem;
+        text-decoration: none;
+        font-weight: 700;
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+
+    .landing-shell .btn-main {
+        background: linear-gradient(90deg, #e7722f 0%, #c95e22 100%);
+        color: #ffffff;
+        box-shadow: 0 12px 28px rgba(193, 96, 36, 0.3);
+    }
+
+    .landing-shell .btn-main:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 34px rgba(193, 96, 36, 0.38);
+        color: #ffffff;
+    }
+
+    .landing-shell .btn-ghost {
+        border: 2px solid #dde5eb;
+        color: #10212f;
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .landing-shell .btn-ghost:hover {
+        transform: translateY(-2px);
+        border-color: #c95e22;
+        color: #c95e22;
+    }
+
+    .hero-block {
         position: relative;
         overflow: hidden;
+        min-height: 680px;
+        background:
+            linear-gradient(110deg, rgba(12, 25, 37, 0.95) 0%, rgba(12, 25, 37, 0.78) 42%, rgba(12, 25, 37, 0.32) 100%),
+            url("https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1800&q=80") center/cover no-repeat;
+        display: flex;
+        align-items: center;
     }
 
-    .hero::before {
-        content: '';
+    .hero-block::before {
+        content: "";
         position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-        border-radius: 50%;
+        inset: 0;
+        background: radial-gradient(circle at 80% 18%, rgba(231, 114, 47, 0.3) 0%, rgba(231, 114, 47, 0) 40%);
+        pointer-events: none;
     }
 
-    .hero::after {
-        content: '';
-        position: absolute;
-        bottom: -30%;
-        left: 5%;
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
-        border-radius: 50%;
-    }
-
-    .hero-content {
+    .hero-grid {
         position: relative;
         z-index: 2;
-        text-align: center;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        align-items: center;
+        gap: 2rem;
+        padding: 5.5rem 0;
     }
 
-    .hero h1 {
-        font-size: 3.5rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-        letter-spacing: -1.5px;
-        line-height: 1.2;
-    }
-
-    .hero p {
-        font-size: 1.3rem;
-        margin-bottom: 2.5rem;
-        opacity: 0.95;
-        font-weight: 500;
+    .hero-copy {
         max-width: 700px;
-        margin-left: auto;
-        margin-right: auto;
+        color: #f8f5ef;
+        animation: heroFade 0.9s ease;
     }
 
-    .hero-buttons {
+    .hero-copy .eyebrow {
+        color: #ff9f5a;
+    }
+
+    .hero-copy .body-text {
+        color: #d7e0e8;
+        max-width: 620px;
+    }
+
+    .hero-actions {
+        margin-top: 2rem;
         display: flex;
-        gap: 1rem;
-        justify-content: center;
+        gap: 0.9rem;
         flex-wrap: wrap;
-        margin-bottom: 3rem;
-    }
-
-    .btn {
-        padding: 0.85rem 2rem;
-        border-radius: 0.75rem;
-        font-weight: 700;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        border: none;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .btn-primary {
-        background: white;
-        color: rgb(107, 70, 210);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
-    }
-
-    .btn-secondary {
-        background: transparent;
-        color: white;
-        border: 2px solid white;
-    }
-
-    .btn-secondary:hover {
-        background: white;
-        color: rgb(107, 70, 210);
     }
 
     .hero-stats {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 2rem;
-        margin-top: 3rem;
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+        gap: 1rem;
+        margin-top: 2.2rem;
     }
 
-    .stat {
-        text-align: center;
+    .hero-stat {
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 0.7rem;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.9rem 1rem;
+        backdrop-filter: blur(5px);
     }
 
-    .stat-number {
-        font-size: 2.5rem;
-        font-weight: 800;
-        margin-bottom: 0.5rem;
+    .hero-stat strong {
+        display: block;
+        font-size: 1.35rem;
+        color: #ffffff;
     }
 
-    .stat-label {
+    .hero-stat span {
+        font-size: 0.84rem;
+        color: #d2dbe2;
+        letter-spacing: 0.02em;
+    }
+
+    .hero-card {
+        justify-self: end;
+        width: min(430px, 100%);
+        border-radius: 0.9rem;
+        overflow: hidden;
+        background: #ffffff;
+        box-shadow: 0 20px 45px rgba(6, 16, 24, 0.35);
+        animation: heroFloat 2.4s ease-in-out infinite;
+    }
+
+    .hero-card .card-top {
+        padding: 1.2rem 1.2rem 0.4rem;
+        background: #f8f4ee;
+        border-bottom: 1px solid #efe3d6;
+    }
+
+    .hero-card .card-top h3 {
         font-size: 1rem;
-        opacity: 0.85;
-        font-weight: 500;
-    }
-
-    /* ==================== FEATURES SECTION ==================== */
-    .features {
-        padding: 6rem 0;
-        background: linear-gradient(135deg, rgb(249, 250, 251) 0%, rgb(243, 244, 246) 100%);
-    }
-
-    .section-header {
-        text-align: center;
-        margin-bottom: 4rem;
-    }
-
-    .section-title {
-        font-size: 2.75rem;
+        margin: 0;
         font-weight: 800;
-        color: rgb(31, 41, 55);
-        margin-bottom: 1rem;
-        letter-spacing: -0.5px;
+        color: #163047;
     }
 
-    .section-subtitle {
-        font-size: 1.2rem;
-        color: rgb(107, 114, 128);
-        max-width: 600px;
-        margin: 0 auto;
-        font-weight: 500;
+    .hero-card .card-main {
+        padding: 1.2rem;
     }
 
-    .features-grid {
+    .hero-card .site-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem 0;
+        border-bottom: 1px dashed #d8e0e7;
+    }
+
+    .hero-card .site-row:last-child {
+        border-bottom: none;
+    }
+
+    .hero-card .site-row b {
+        color: #142736;
+    }
+
+    .hero-card .pill {
+        border-radius: 999px;
+        padding: 0.2rem 0.6rem;
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    .hero-card .pill.ontrack {
+        background: #1f8e55;
+    }
+
+    .hero-card .pill.review {
+        background: #d88b2c;
+    }
+
+    .hero-card .pill.delay {
+        background: #be3a2f;
+    }
+
+    .about-block,
+    .services-block,
+    .projects-block,
+    .process-block,
+    .cta-block {
+        padding: 5.2rem 0;
+    }
+
+    .about-block {
+        background: linear-gradient(180deg, #f4f1eb 0%, #fefcf9 100%);
+    }
+
+    .about-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2.5rem;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 2.2rem;
+        align-items: center;
     }
 
-    .feature-card {
-        background: white;
-        padding: 2.5rem;
-        border-radius: 1.25rem;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid rgba(229, 231, 235, 0.5);
+    .about-media {
+        position: relative;
+        min-height: 420px;
+    }
+
+    .about-media img {
+        width: 100%;
+        height: 100%;
+        min-height: 420px;
+        object-fit: cover;
+        border-radius: 0.9rem;
+        box-shadow: 0 20px 38px rgba(9, 22, 33, 0.2);
+    }
+
+    .about-badge {
+        position: absolute;
+        left: 1.2rem;
+        bottom: 1.2rem;
+        background: #ffffff;
+        border-left: 5px solid #e7722f;
+        padding: 0.9rem 1rem;
+        border-radius: 0.45rem;
+        box-shadow: 0 12px 22px rgba(12, 26, 37, 0.2);
+    }
+
+    .about-badge strong {
+        display: block;
+        font-size: 1.5rem;
+        color: #132d42;
+    }
+
+    .about-points {
+        margin-top: 1.5rem;
+        display: grid;
+        gap: 0.8rem;
+    }
+
+    .about-points div {
+        background: #ffffff;
+        border: 1px solid #e8edf2;
+        border-radius: 0.6rem;
+        padding: 0.8rem 1rem;
+        color: #1d3447;
+        font-weight: 600;
+    }
+
+    .services-block {
+        background: #fefcf9;
+    }
+
+    .services-grid {
+        margin-top: 2.3rem;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.2rem;
+    }
+
+    .service-card {
+        background: #ffffff;
+        border: 1px solid #e5ecf1;
+        border-radius: 0.75rem;
+        padding: 1.3rem;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .service-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 30px rgba(7, 22, 34, 0.11);
+    }
+
+    .service-num {
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.11em;
+        color: #d36c2d;
+        margin-bottom: 0.6rem;
+    }
+
+    .service-card h3 {
+        font-size: 1.15rem;
+        margin-bottom: 0.55rem;
+        color: #0f2739;
+        font-weight: 800;
+    }
+
+    .service-card p {
+        color: #4a5a68;
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .projects-block {
+        background:
+            linear-gradient(120deg, rgba(18, 37, 53, 0.97) 0%, rgba(18, 37, 53, 0.9) 100%),
+            url("https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1800&q=80") center/cover no-repeat;
+        color: #f6f8fb;
+    }
+
+    .projects-block .eyebrow {
+        color: #ffa66a;
+    }
+
+    .projects-block .body-text {
+        color: #d2dce6;
+    }
+
+    .projects-grid {
+        margin-top: 2rem;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .project-card {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 0.7rem;
+        padding: 1rem;
+        min-height: 180px;
+    }
+
+    .project-card h4 {
+        font-size: 1.05rem;
+        margin-bottom: 0.45rem;
+    }
+
+    .project-card p {
+        margin-bottom: 0;
+        color: #d3deea;
+        font-size: 0.95rem;
+    }
+
+    .process-block {
+        background: #fbf8f2;
+    }
+
+    .process-grid {
+        margin-top: 2rem;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .step-card {
+        background: #ffffff;
+        border: 1px solid #e6edf3;
+        border-radius: 0.65rem;
+        padding: 1rem;
         position: relative;
         overflow: hidden;
     }
 
-    .feature-card::before {
-        content: '';
+    .step-card::after {
+        content: "";
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        background: linear-gradient(90deg, #e7722f 0%, #ba5720 100%);
     }
 
-    .feature-card:hover::before {
-        transform: scaleX(1);
+    .step-card span {
+        display: inline-block;
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: #c66229;
+        margin-bottom: 0.45rem;
     }
 
-    .feature-card:hover {
-        transform: translateY(-12px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-        border-color: rgba(107, 70, 210, 0.2);
+    .step-card h4 {
+        margin-bottom: 0.45rem;
+        font-size: 1.06rem;
+        color: #122a3b;
     }
 
-    .feature-icon {
-        width: 70px;
-        height: 70px;
-        background: linear-gradient(135deg, rgba(107, 70, 210, 0.1) 0%, rgba(124, 81, 229, 0.05) 100%);
-        border-radius: 0.75rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.5rem;
-        margin-bottom: 1.5rem;
+    .step-card p {
+        margin: 0;
+        color: #506170;
     }
 
-    .feature-title {
-        font-size: 1.35rem;
-        font-weight: 700;
-        color: rgb(31, 41, 55);
-        margin-bottom: 1rem;
-    }
-
-    .feature-text {
-        color: rgb(107, 114, 128);
-        font-size: 1rem;
-        line-height: 1.6;
-    }
-
-    /* ==================== STATS SECTION ==================== */
-    .stats-section {
-        padding: 6rem 0;
-        background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(88, 47, 192) 50%, rgb(68, 21, 182) 100%);
-        color: white;
+    .cta-block {
+        background: linear-gradient(95deg, #e7722f 0%, #c05a22 100%);
+        color: #ffffff;
+        text-align: center;
         position: relative;
         overflow: hidden;
     }
 
-    .stats-section::before {
-        content: '';
+    .cta-block::before {
+        content: "";
         position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 500px;
-        height: 500px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        width: 280px;
+        height: 280px;
         border-radius: 50%;
+        background: rgba(255, 255, 255, 0.11);
+        top: -90px;
+        right: -40px;
     }
 
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 3rem;
+    .cta-block .section-wrap {
         position: relative;
         z-index: 2;
     }
 
-    .stat-item {
-        text-align: center;
+    .cta-block h2 {
+        font-size: clamp(1.8rem, 3.2vw, 3rem);
+        margin-bottom: 0.8rem;
     }
 
-    .stat-item h3 {
-        font-size: 3.5rem;
-        font-weight: 800;
-        margin-bottom: 0.5rem;
+    .cta-block p {
+        margin: 0 auto 1.6rem;
+        max-width: 760px;
+        color: rgba(255, 255, 255, 0.9);
     }
 
-    .stat-item p {
-        font-size: 1.1rem;
-        opacity: 0.9;
+    .cta-actions {
+        display: flex;
+        justify-content: center;
+        gap: 0.8rem;
+        flex-wrap: wrap;
     }
 
-    /* ==================== CTA SECTION ==================== */
-    .cta-section {
-        padding: 6rem 0;
-        background: white;
-        text-align: center;
+    .cta-block .btn-main {
+        background: #10212f;
+        color: #ffffff;
+        box-shadow: 0 12px 28px rgba(13, 24, 34, 0.32);
     }
 
-    .cta-title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: rgb(31, 41, 55);
-        margin-bottom: 1.5rem;
+    .cta-block .btn-ghost {
+        border-color: rgba(255, 255, 255, 0.75);
+        color: #ffffff;
+        background: transparent;
     }
 
-    .cta-text {
-        font-size: 1.1rem;
-        color: rgb(107, 114, 128);
-        margin-bottom: 2.5rem;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
+    @@keyframes heroFade {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    /* ==================== FOOTER ==================== */
-    footer {
-        background: linear-gradient(135deg, rgb(31, 41, 55) 0%, rgb(17, 24, 39) 100%);
-        color: white;
-        padding: 4rem 0 2rem 0;
+    @@keyframes heroFloat {
+        0% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-8px);
+        }
+        100% {
+            transform: translateY(0);
+        }
     }
 
-    .footer-content {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 3rem;
-        margin-bottom: 3rem;
-    }
-
-    .footer-section h4 {
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        font-size: 1.1rem;
-    }
-
-    .footer-section a {
-        color: rgba(255, 255, 255, 0.7);
-        text-decoration: none;
-        transition: color 0.2s ease;
-        display: block;
-        margin-bottom: 0.75rem;
-    }
-
-    .footer-section a:hover {
-        color: white;
-    }
-
-    .footer-bottom {
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        padding-top: 2rem;
-        text-align: center;
-        color: rgba(255, 255, 255, 0.6);
-    }
-
-    /* ==================== UTILITIES ==================== */
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 2rem;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    /* ==================== RESPONSIVE ==================== */
-    @@media (max-width: 768px) {
-        .hero h1 {
-            font-size: 2rem;
+    @@media (max-width: 1100px) {
+        .hero-grid,
+        .about-grid {
+            grid-template-columns: 1fr;
         }
 
-        .hero p {
-            font-size: 1rem;
+        .hero-card {
+            justify-self: start;
+            width: 100%;
         }
 
-        .section-title {
-            font-size: 1.75rem;
+        .services-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        .section-subtitle {
-            font-size: 1rem;
+        .projects-grid,
+        .process-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 720px) {
+        .hero-block {
+            min-height: 560px;
         }
 
-        .features-grid {
-            gap: 1.5rem;
-        }
-
-        .feature-card {
-            padding: 1.5rem;
-        }
-
-        .stats-grid {
-            gap: 2rem;
-        }
-
-        .stat-item h3 {
-            font-size: 2rem;
-        }
-
-        .hero-buttons {
+        .hero-actions,
+        .cta-actions {
             flex-direction: column;
         }
 
-        .btn {
-            width: 100%;
-            text-align: center;
+        .hero-stats {
+            grid-template-columns: 1fr;
         }
 
-        .footer-content {
+        .services-grid,
+        .projects-grid,
+        .process-grid {
             grid-template-columns: 1fr;
+        }
+
+        .about-media img,
+        .about-media {
+            min-height: 300px;
         }
     }
 </style>
 
-<div class="hero">
-    <div class="container">
-        <div class="hero-content">
-            <h1>🏗️ Simulate. Optimize. Build.</h1>
-            <p>The ultimate construction project intelligence system with real-time simulation and intelligent conflict detection.</p>
-            
-            <div class="hero-buttons">
-                <a href="@Url.Action("Register", "Account")" class="btn btn-primary">Get Started Free</a>
-                <a href="#features" class="btn btn-secondary">Learn More</a>
-            </div>
+<div class="landing-shell">
+    <section class="hero-block">
+        <div class="section-wrap">
+            <div class="hero-grid">
+                <div class="hero-copy">
+                    <span class="eyebrow">Building The Future</span>
+                    <h1 class="headline">Strong Foundations For Smarter Construction Decisions</h1>
+                    <p class="body-text">
+                        ConstructorIQ helps you plan schedules, monitor materials, and catch project conflicts before they become expensive delays.
+                        One platform for crews, costs, and confidence.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="@Url.Action("Register", "Account")" class="btn-main">Start Free Trial</a>
+                        <a href="@Url.Action("Login", "Account")" class="btn-ghost">Sign In To Dashboard</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <strong>850+</strong>
+                            <span>Managed Projects</span>
+                        </div>
+                        <div class="hero-stat">
+                            <strong>96%</strong>
+                            <span>Schedule Accuracy</span>
+                        </div>
+                        <div class="hero-stat">
+                            <strong>$75M+</strong>
+                            <span>Budget Value Tracked</span>
+                        </div>
+                        <div class="hero-stat">
+                            <strong>24/7</strong>
+                            <span>Project Visibility</span>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="hero-stats">
-                <div class="stat">
-                    <div class="stat-number">500+</div>
-                    <div class="stat-label">Projects Managed</div>
+                <aside class="hero-card" aria-label="Project health summary">
+                    <div class="card-top">
+                        <h3>Live Site Overview</h3>
+                    </div>
+                    <div class="card-main">
+                        <div class="site-row">
+                            <b>North Ridge Mall</b>
+                            <span class="pill ontrack">On Track</span>
+                        </div>
+                        <div class="site-row">
+                            <b>Harbor Office Tower</b>
+                            <span class="pill review">Review</span>
+                        </div>
+                        <div class="site-row">
+                            <b>Riverfront Housing</b>
+                            <span class="pill delay">Delay Risk</span>
+                        </div>
+                        <div class="site-row">
+                            <b>Warehouse Retrofit</b>
+                            <span class="pill ontrack">On Track</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-block">
+        <div class="section-wrap">
+            <div class="about-grid">
+                <div class="about-media">
+                    <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1100&q=80" alt="Construction team at work" />
+                    <div class="about-badge">
+                        <strong>18 Years</strong>
+                        Proven planning and project intelligence.
+                    </div>
                 </div>
-                <div class="stat">
-                    <div class="stat-number">95%</div>
-                    <div class="stat-label">Cost Savings</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label">Real-Time Monitoring</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label">Conflict Detection</div>
+                <div>
+                    <span class="eyebrow">About ConstructorIQ</span>
+                    <h2 class="headline" style="font-size: clamp(1.8rem, 3vw, 3rem); color: #102637;">Built for Project Managers, Engineers, and Owners</h2>
+                    <p class="body-text">
+                        Inspired by modern construction firms, ConstructorIQ combines budget tracking, crew planning, and material control
+                        in one clean workflow. You get fast visibility, fewer surprises, and better delivery outcomes.
+                    </p>
+                    <div class="about-points">
+                        <div>Forecast budget impact before tasks start.</div>
+                        <div>Coordinate crew and material availability in real time.</div>
+                        <div>Detect schedule and resource conflicts early.</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <section class="services-block">
+        <div class="section-wrap">
+            <span class="eyebrow">Core Services</span>
+            <h2 class="headline" style="font-size: clamp(1.8rem, 3vw, 3rem); color: #112c40;">Professional Construction Intelligence Services</h2>
+            <p class="body-text" style="max-width: 760px;">
+                Your existing modules already support operations. This landing layout highlights the same strengths in a modern visual style.
+            </p>
+
+            <div class="services-grid">
+                <article class="service-card">
+                    <div class="service-num">SERVICE 01</div>
+                    <h3>Project Simulation</h3>
+                    <p>Model timelines and dependencies to predict completion risks before execution starts.</p>
+                </article>
+                <article class="service-card">
+                    <div class="service-num">SERVICE 02</div>
+                    <h3>Conflict Detection</h3>
+                    <p>Automatically flag overlaps in crew assignments, material shortages, and schedule clashes.</p>
+                </article>
+                <article class="service-card">
+                    <div class="service-num">SERVICE 03</div>
+                    <h3>Budget Visibility</h3>
+                    <p>Track costs live against plan with clear indicators for overruns and usage trends.</p>
+                </article>
+                <article class="service-card">
+                    <div class="service-num">SERVICE 04</div>
+                    <h3>Material Planning</h3>
+                    <p>Link task requirements to inventory so teams know exactly what is needed and when.</p>
+                </article>
+                <article class="service-card">
+                    <div class="service-num">SERVICE 05</div>
+                    <h3>Crew Coordination</h3>
+                    <p>Keep workforce utilization balanced while protecting productivity and site safety.</p>
+                </article>
+                <article class="service-card">
+                    <div class="service-num">SERVICE 06</div>
+                    <h3>Execution Insights</h3>
+                    <p>Turn project data into practical decisions for delivery speed and margin protection.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="projects-block">
+        <div class="section-wrap">
+            <span class="eyebrow">Recent Project Types</span>
+            <h2 class="headline" style="font-size: clamp(1.8rem, 3vw, 3rem);">Completed Construction Programs</h2>
+            <p class="body-text" style="max-width: 780px;">
+                Showcase-ready cards inspired by the reference template, adapted to ConstructorIQ data-driven use cases.
+            </p>
+
+            <div class="projects-grid">
+                <article class="project-card">
+                    <h4>Commercial Tower</h4>
+                    <p>Advanced schedule phasing and procurement monitoring across multi-crew operations.</p>
+                </article>
+                <article class="project-card">
+                    <h4>Hospital Expansion</h4>
+                    <p>Critical path visibility and material sequencing for zero-disruption execution.</p>
+                </article>
+                <article class="project-card">
+                    <h4>Industrial Retrofit</h4>
+                    <p>Conflict detection reduced idle crew time and minimized rework costs.</p>
+                </article>
+                <article class="project-card">
+                    <h4>Residential Community</h4>
+                    <p>Budget and supply alignment kept multiple parallel workstreams on schedule.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="process-block">
+        <div class="section-wrap">
+            <span class="eyebrow">Our Process</span>
+            <h2 class="headline" style="font-size: clamp(1.8rem, 3vw, 3rem); color: #10283a;">How Teams Work With ConstructorIQ</h2>
+
+            <div class="process-grid">
+                <article class="step-card">
+                    <span>STEP 01</span>
+                    <h4>Define Project Scope</h4>
+                    <p>Capture phases, tasks, and dependencies with clear baseline assumptions.</p>
+                </article>
+                <article class="step-card">
+                    <span>STEP 02</span>
+                    <h4>Assign Crews and Materials</h4>
+                    <p>Connect labor and inventory to each task for reliable execution readiness.</p>
+                </article>
+                <article class="step-card">
+                    <span>STEP 03</span>
+                    <h4>Run Simulation Checks</h4>
+                    <p>Validate potential conflicts and schedule bottlenecks before field rollout.</p>
+                </article>
+                <article class="step-card">
+                    <span>STEP 04</span>
+                    <h4>Monitor and Optimize</h4>
+                    <p>Use real-time insights to keep progress, quality, and costs under control.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-block">
+        <div class="section-wrap">
+            <h2>Ready To Plan Smarter and Build Faster?</h2>
+            <p>Keep your current workflows and authentication exactly as they are. Start with a modern landing experience and scale page-by-page.</p>
+            <div class="cta-actions">
+                <a href="@Url.Action("Register", "Account")" class="btn-main">Create Your Account</a>
+                <a href="@Url.Action("Login", "Account")" class="btn-ghost">Login</a>
+            </div>
+        </div>
+    </section>
 </div>
-
-<section class="features" id="features">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Powerful Features</h2>
-            <p class="section-subtitle">Everything you need to manage construction projects efficiently and effectively</p>
-        </div>
-
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <h3 class="feature-title">Real-Time Simulation</h3>
-                <p class="feature-text">Simulate project scenarios in real-time and make data-driven decisions with advanced analytics and insights.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">🚨</div>
-                <h3 class="feature-title">Conflict Detection</h3>
-                <p class="feature-text">Automatically detect resource conflicts, schedule issues, and budget overruns before they become problems.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">💰</div>
-                <h3 class="feature-title">Budget Tracking</h3>
-                <p class="feature-text">Monitor project budgets in real-time with detailed cost breakdowns and utilization analytics.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">👥</div>
-                <h3 class="feature-title">Team Collaboration</h3>
-                <p class="feature-text">Work together seamlessly with team members with real-time updates and collaboration tools.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">📈</div>
-                <h3 class="feature-title">Advanced Analytics</h3>
-                <p class="feature-text">Get deep insights into project performance with comprehensive dashboards and detailed reporting.</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3 class="feature-title">Fast & Reliable</h3>
-                <p class="feature-text">Enterprise-grade infrastructure ensuring 99.9% uptime and blazing-fast performance.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="stats-section">
-    <div class="container">
-        <div class="stats-grid">
-            <div class="stat-item">
-                <h3>500+</h3>
-                <p>Projects Successfully Managed</p>
-            </div>
-            <div class="stat-item">
-                <h3>$50M+</h3>
-                <p>In Project Value Tracked</p>
-            </div>
-            <div class="stat-item">
-                <h3>10K+</h3>
-                <p>Active Users Worldwide</p>
-            </div>
-            <div class="stat-item">
-                <h3>99.9%</h3>
-                <p>System Uptime Guaranteed</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="cta-section">
-    <div class="container">
-        <h2 class="cta-title">Ready to Transform Your Projects?</h2>
-        <p class="cta-text">Join thousands of construction professionals using ConstructorIQ to optimize their projects and increase profitability.</p>
-        <a href="@Url.Action("Register", "Account")" class="btn btn-primary">Start Your Free Trial Today</a>
-    </div>
-</section>
-
-<footer>
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>🏗️ ConstructorIQ</h4>
-                <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 1.5rem;">The ultimate construction project intelligence system.</p>
-            </div>
-            <div class="footer-section">
-                <h4>Product</h4>
-                <a href="#">Features</a>
-                <a href="#">Pricing</a>
-                <a href="#">Security</a>
-                <a href="#">Roadmap</a>
-            </div>
-            <div class="footer-section">
-                <h4>Company</h4>
-                <a href="#">About</a>
-                <a href="#">Blog</a>
-                <a href="#">Careers</a>
-                <a href="#">Contact</a>
-            </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Cookie Policy</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 ConstructorIQ. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
