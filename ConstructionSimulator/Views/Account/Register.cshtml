@@ -4,58 +4,78 @@
     ViewData["Title"] = "Create Account";
 }
 
-<div style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 200px); padding: 2rem 0;">
-    <div style="width: 100%; max-width: 500px; background: white; border-radius: 1rem; box-shadow: 0 20px 60px rgba(0,0,0,0.08); overflow: hidden;">
-
-        <div style="background: linear-gradient(135deg, rgb(107,70,210) 0%, rgb(124,81,229) 100%); padding: 3rem 2rem; text-align: center; color: white;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">✨</div>
-            <h1 style="font-size: 1.75rem; font-weight: 700; margin: 0; padding: 0; margin-bottom: 0.5rem;">Create Account</h1>
-            <p style="font-size: 0.95rem; opacity: 0.95; margin: 0;">Join Construction Simulator and start building</p>
+<section class="auth-shell">
+    <div class="auth-container">
+        <div class="auth-hero">
+            <p class="auth-breadcrumb"><a asp-controller="Landing" asp-action="Index">Home</a> / Account</p>
+            <h1 class="auth-title">Create Account</h1>
         </div>
 
-        <div style="padding: 2.5rem 2rem;">
-            <form method="post" asp-action="Register">
-                @if (ViewBag.ErrorMessage != null)
-                {
-                    <div style="background: linear-gradient(135deg, rgb(254,226,226) 0%, rgb(254,202,202) 100%); color: rgb(185,28,28); border-left: 4px solid rgb(220,38,38); border-radius: 0.5rem; padding: 1rem; margin-bottom: 1.5rem;">
-                        <strong style="display: block; margin-bottom: 0.5rem; font-size: 0.95rem;">Registration Error</strong>
-                        <p style="margin: 0; font-size: 0.9rem;">@ViewBag.ErrorMessage</p>
+        <div class="auth-wrap">
+            <aside class="auth-side">
+                <h2>Join ConstructorIQ</h2>
+                <p>Set up your account and bring your team into one modern construction workspace with shared intelligence.</p>
+                <ul class="auth-side-list">
+                    <li>Secure account access for project teams</li>
+                    <li>Unified material, crew, and task visibility</li>
+                    <li>Faster delivery through better planning</li>
+                </ul>
+            </aside>
+
+            <div class="auth-panel">
+                <div class="auth-panel-head">
+                    <h3>Registration Form</h3>
+                    <p>Create your account details to start managing projects.</p>
+                </div>
+
+                <div class="auth-body">
+                <form method="post" asp-action="Register" class="auth-form-grid">
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+                    {
+                        <div class="auth-error auth-group-full">
+                            <strong>Registration Error</strong>
+                            @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
+                            {
+                                <p class="mb-0">@error.ErrorMessage</p>
+                            }
+                        </div>
+                    }
+
+                    <div class="auth-group auth-group-full">
+                        <label class="auth-label" asp-for="FullName">Full Name</label>
+                        <input class="auth-input" type="text" asp-for="FullName" placeholder="John Doe" />
+                        <span asp-validation-for="FullName"></span>
                     </div>
-                }
 
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; color: rgb(31,41,55); font-weight: 600; font-size: 0.95rem;" asp-for="FullName">Full Name</label>
-                    <input class="form-control" type="text" asp-for="FullName" placeholder="John Doe" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid rgb(229,231,235); border-radius: 0.5rem; font-size: 1rem; background-color: rgb(249,250,251);" />
-                    <span asp-validation-for="FullName" style="color: rgb(239,68,68); font-size: 0.85rem;"></span>
+                    <div class="auth-group auth-group-full">
+                        <label class="auth-label" asp-for="Email">Email Address</label>
+                        <input class="auth-input" type="email" asp-for="Email" placeholder="you@example.com" />
+                        <span asp-validation-for="Email"></span>
+                    </div>
+
+                    <div class="auth-group">
+                        <label class="auth-label" asp-for="Password">Password</label>
+                        <input class="auth-input" type="password" asp-for="Password" placeholder="Create a strong password" id="passwordInput" />
+                        <span asp-validation-for="Password"></span>
+                    </div>
+
+                    <div class="auth-group">
+                        <label class="auth-label" asp-for="ConfirmPassword">Confirm Password</label>
+                        <input class="auth-input" type="password" asp-for="ConfirmPassword" placeholder="Confirm your password" />
+                        <span asp-validation-for="ConfirmPassword"></span>
+                    </div>
+
+                    <button type="submit" class="auth-submit">Create My Account</button>
+
+                    <div class="auth-footer">
+                        <p class="mb-0">Already have an account? <a asp-action="Login" class="auth-link">Sign in here</a></p>
+                    </div>
+                </form>
                 </div>
-
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; color: rgb(31,41,55); font-weight: 600; font-size: 0.95rem;" asp-for="Email">Email Address</label>
-                    <input class="form-control" type="email" asp-for="Email" placeholder="you@example.com" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid rgb(229,231,235); border-radius: 0.5rem; font-size: 1rem; background-color: rgb(249,250,251);" />
-                    <span asp-validation-for="Email" style="color: rgb(239,68,68); font-size: 0.85rem;"></span>
-                </div>
-
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; color: rgb(31,41,55); font-weight: 600; font-size: 0.95rem;" asp-for="Password">Password</label>
-                    <input class="form-control" type="password" asp-for="Password" placeholder="Create a strong password" id="passwordInput" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid rgb(229,231,235); border-radius: 0.5rem; font-size: 1rem; background-color: rgb(249,250,251);" />
-                    <span asp-validation-for="Password" style="color: rgb(239,68,68); font-size: 0.85rem;"></span>
-                </div>
-
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; margin-bottom: 0.5rem; color: rgb(31,41,55); font-weight: 600; font-size: 0.95rem;" asp-for="ConfirmPassword">Confirm Password</label>
-                    <input class="form-control" type="password" asp-for="ConfirmPassword" placeholder="Confirm your password" style="width: 100%; padding: 0.75rem 1rem; border: 2px solid rgb(229,231,235); border-radius: 0.5rem; font-size: 1rem; background-color: rgb(249,250,251);" />
-                    <span asp-validation-for="ConfirmPassword" style="color: rgb(239,68,68); font-size: 0.85rem;"></span>
-                </div>
-
-                <button type="submit" style="width: 100%; padding: 0.875rem; background: linear-gradient(135deg, rgb(107,70,210) 0%, rgb(124,81,229) 100%); color: white; border: none; border-radius: 0.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-bottom: 1rem;">Create My Account</button>
-
-                <div style="text-align: center; padding-top: 1rem; border-top: 1px solid rgb(229,231,235);">
-                    <p style="margin: 0; color: rgb(107,114,128); font-size: 0.95rem;">Already have an account? <a asp-action="Login" style="color: rgb(107,70,210); text-decoration: none; font-weight: 600;">Sign in here</a></p>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
     @{

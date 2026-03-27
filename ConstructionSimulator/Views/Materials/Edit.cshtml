@@ -4,56 +4,70 @@
     ViewData["Title"] = "Edit Material";
 }
 
-<div class="container mt-4">
-    <h2>Edit Material</h2>
-
-    <form asp-action="Edit" method="post">
-        <input type="hidden" asp-for="MaterialId" />
-
-        <div class="mb-3">
-            <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+<section class="app-shell">
+    <div class="app-container">
+        <div class="app-hero">
+            <h1 class="app-hero-title">Edit Material</h1>
+            <p class="app-hero-subtitle">Keep inventory, costing, and procurement lead times up to date.</p>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label"></label>
-            <input asp-for="Description" class="form-control" />
-        </div>
+        <div class="app-form-panel">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="MaterialId" />
 
-        <div class="mb-3">
-            <label asp-for="Quantity" class="form-label"></label>
-            <input asp-for="Quantity" class="form-control" />
-            <span asp-validation-for="Quantity" class="text-danger"></span>
-        </div>
+                <div asp-validation-summary="ModelOnly" class="auth-error"></div>
 
-        <div class="mb-3">
-            <label asp-for="UnitType" class="form-label"></label>
-            <input asp-for="UnitType" class="form-control" />
-            <span asp-validation-for="UnitType" class="text-danger"></span>
-        </div>
+                <div class="app-form-grid">
+                    <div class="app-field">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" />
+                        <span asp-validation-for="Name" class="field-validation-error"></span>
+                    </div>
 
-        <div class="mb-3">
-            <label asp-for="CostPerUnit" class="form-label"></label>
-            <input asp-for="CostPerUnit" class="form-control" />
-            <span asp-validation-for="CostPerUnit" class="text-danger"></span>
-        </div>
+                    <div class="app-field app-field-full">
+                        <label asp-for="Description"></label>
+                        <input asp-for="Description" />
+                    </div>
 
-        <div class="mb-3">
-            <label asp-for="LeadTimeDays" class="form-label"></label>
-            <input asp-for="LeadTimeDays" class="form-control" />
-        </div>
+                    <div class="app-field">
+                        <label asp-for="Quantity"></label>
+                        <input asp-for="Quantity" type="number" min="0" />
+                        <span asp-validation-for="Quantity" class="field-validation-error"></span>
+                    </div>
 
-        <div class="form-check mb-3">
-            <input asp-for="InStock" class="form-check-input" />
-            <label asp-for="InStock" class="form-check-label"></label>
-        </div>
+                    <div class="app-field">
+                        <label asp-for="UnitType"></label>
+                        <input asp-for="UnitType" />
+                        <span asp-validation-for="UnitType" class="field-validation-error"></span>
+                    </div>
 
-        <button type="submit" class="btn btn-primary">Update</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+                    <div class="app-field">
+                        <label asp-for="CostPerUnit"></label>
+                        <input asp-for="CostPerUnit" type="number" step="0.01" min="0" />
+                        <span asp-validation-for="CostPerUnit" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="app-field">
+                        <label asp-for="LeadTimeDays"></label>
+                        <input asp-for="LeadTimeDays" type="number" min="0" />
+                    </div>
+
+                    <div class="app-field app-field-full" style="display: flex; align-items: flex-end;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+                            <input asp-for="InStock" type="checkbox" /> In Stock
+                        </label>
+                    </div>
+                </div>
+
+                <div class="app-form-actions">
+                    <a asp-action="Index" class="app-btn-secondary">Cancel</a>
+                    <button type="submit" class="app-btn">Update Material</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-}   
+}

@@ -1,29 +1,40 @@
-﻿@model ConstructionSimulator.Models.Material
+@model ConstructionSimulator.Models.Material
 
 @{
     ViewData["Title"] = "Delete Material";
 }
 
-<div class="container mt-4">
-    <h2>Delete Material</h2>
-    <h4>Are you sure you want to delete this material?</h4>
+<section class="app-shell">
+    <div class="app-container">
+        <div class="app-hero">
+            <h1 class="app-hero-title">Delete Material</h1>
+            <p class="app-hero-subtitle">Confirm material removal from your inventory catalog.</p>
+        </div>
 
-    <hr />
+        <div class="app-panel">
+            <div class="app-panel-head">
+                <h3>Confirm Deletion</h3>
+                <span class="app-status app-status-planning">Permanent Action</span>
+            </div>
+            <div class="app-panel-body">
+                <div class="app-warning" style="margin-bottom: 1rem;">
+                    This material will no longer be available for task planning and cost estimates.
+                </div>
 
-    <dl class="row">
-        <dt class="col-sm-3">Name</dt>
-        <dd class="col-sm-9">@Model.Name</dd>
+                <div class="app-list" style="margin-bottom: 1rem;">
+                    <div class="app-list-row"><span class="app-label">Name</span><span class="app-value">@Model.Name</span></div>
+                    <div class="app-list-row"><span class="app-label">Cost Per Unit</span><span class="app-value">$@Model.CostPerUnit.ToString("N2")</span></div>
+                    <div class="app-list-row"><span class="app-label">Unit Type</span><span class="app-value">@Model.UnitType</span></div>
+                </div>
 
-        <dt class="col-sm-3">Cost Per Unit</dt>
-        <dd class="col-sm-9">@Model.CostPerUnit.ToString("N2")</dd>
-
-        <dt class="col-sm-3">Unit Type</dt>
-        <dd class="col-sm-9">@Model.UnitType</dd>
-    </dl>
-
-    <form asp-action="Delete" method="post">
-        <input type="hidden" name="id" value="@Model.MaterialId" />
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" name="id" value="@Model.MaterialId" />
+                    <div class="app-form-actions" style="margin-top: 0;">
+                        <a asp-action="Index" class="app-btn-secondary">Cancel</a>
+                        <button type="submit" class="app-btn-danger">Delete Material</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
