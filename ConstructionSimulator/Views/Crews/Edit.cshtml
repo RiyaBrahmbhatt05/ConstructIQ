@@ -4,70 +4,84 @@
     ViewData["Title"] = "Edit Crew";
 }
 
-<div class="container mt-4">
-    <h2>Edit Crew</h2>
-
-    <form asp-action="Edit" method="post">
-        <input type="hidden" asp-for="CrewId" />
-
-        <div class="mb-3">
-            <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+<section class="app-shell">
+    <div class="app-container">
+        <div class="app-hero">
+            <h1 class="app-hero-title">Edit Crew</h1>
+            <p class="app-hero-subtitle">Update labor capabilities, contact information, and assignment availability.</p>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="SkillType" class="form-label"></label>
-            <input asp-for="SkillType" class="form-control" />
-            <span asp-validation-for="SkillType" class="text-danger"></span>
-        </div>
+        <div class="app-form-panel">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="CrewId" />
 
-        <div class="mb-3">
-            <label asp-for="TeamSize" class="form-label"></label>
-            <input asp-for="TeamSize" class="form-control" />
-            <span asp-validation-for="TeamSize" class="text-danger"></span>
-        </div>
+                <div asp-validation-summary="ModelOnly" class="auth-error"></div>
 
-        <div class="mb-3">
-            <label asp-for="HourlyRate" class="form-label"></label>
-            <input asp-for="HourlyRate" class="form-control" />
-            <span asp-validation-for="HourlyRate" class="text-danger"></span>
-        </div>
+                <div class="app-form-grid">
+                    <div class="app-field">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" />
+                        <span asp-validation-for="Name" class="field-validation-error"></span>
+                    </div>
 
-        <div class="mb-3">
-            <label asp-for="RequiredLicenses" class="form-label"></label>
-            <input asp-for="RequiredLicenses" class="form-control" />
-        </div>
+                    <div class="app-field">
+                        <label asp-for="SkillType"></label>
+                        <input asp-for="SkillType" />
+                        <span asp-validation-for="SkillType" class="field-validation-error"></span>
+                    </div>
 
-        <div class="mb-3">
-            <label asp-for="MemberNames" class="form-label"></label>
-            <textarea asp-for="MemberNames" class="form-control"></textarea>
-        </div>
+                    <div class="app-field">
+                        <label asp-for="TeamSize"></label>
+                        <input asp-for="TeamSize" type="number" min="1" />
+                        <span asp-validation-for="TeamSize" class="field-validation-error"></span>
+                    </div>
 
-        <div class="mb-3">
-            <label asp-for="ContactDetails" class="form-label"></label>
-            <textarea asp-for="ContactDetails" class="form-control"></textarea>
-        </div>
+                    <div class="app-field">
+                        <label asp-for="HourlyRate"></label>
+                        <input asp-for="HourlyRate" type="number" step="0.01" min="0" />
+                        <span asp-validation-for="HourlyRate" class="field-validation-error"></span>
+                    </div>
 
-        <div class="mb-3">
-            <label asp-for="YearsOfExperience" class="form-label"></label>
-            <input asp-for="YearsOfExperience" class="form-control" />
-        </div>
+                    <div class="app-field app-field-full">
+                        <label asp-for="RequiredLicenses"></label>
+                        <input asp-for="RequiredLicenses" />
+                    </div>
 
-        <div class="mb-3">
-            <label asp-for="Notes" class="form-label"></label>
-            <textarea asp-for="Notes" class="form-control"></textarea>
-        </div>
+                    <div class="app-field app-field-full">
+                        <label asp-for="MemberNames"></label>
+                        <textarea asp-for="MemberNames" rows="3"></textarea>
+                    </div>
 
-        <div class="form-check mb-3">
-            <input asp-for="IsAvailable" class="form-check-input" />
-            <label asp-for="IsAvailable" class="form-check-label"></label>
-        </div>
+                    <div class="app-field app-field-full">
+                        <label asp-for="ContactDetails"></label>
+                        <textarea asp-for="ContactDetails" rows="3"></textarea>
+                    </div>
 
-        <button type="submit" class="btn btn-primary">Update</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+                    <div class="app-field">
+                        <label asp-for="YearsOfExperience"></label>
+                        <input asp-for="YearsOfExperience" type="number" min="0" />
+                    </div>
+
+                    <div class="app-field app-field-full">
+                        <label asp-for="Notes"></label>
+                        <textarea asp-for="Notes" rows="3"></textarea>
+                    </div>
+
+                    <div class="app-field app-field-full" style="display: flex; align-items: flex-end;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+                            <input asp-for="IsAvailable" type="checkbox" /> Available for assignment
+                        </label>
+                    </div>
+                </div>
+
+                <div class="app-form-actions">
+                    <a asp-action="Index" class="app-btn-secondary">Cancel</a>
+                    <button type="submit" class="app-btn">Update Crew</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

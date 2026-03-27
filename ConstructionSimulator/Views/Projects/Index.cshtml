@@ -1,441 +1,76 @@
-﻿@model List<Project>
+@model List<Project>
 @{
     ViewData["Title"] = "Projects";
 }
 
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+<section class="app-shell">
+    <div class="app-container">
+        <div class="app-hero">
+            <h1 class="app-hero-title">Projects</h1>
+            <p class="app-hero-subtitle">Manage and monitor all construction projects from one place.</p>
+        </div>
 
-    body {
-        background: linear-gradient(135deg, rgb(249, 250, 251) 0%, rgb(243, 244, 246) 100%);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    }
+        <div class="app-toolbar">
+            <h2>All Projects</h2>
+            <a asp-action="Create" class="app-btn">New Project</a>
+        </div>
 
-    /* ==================== PAGE HEADER ==================== */
-    .page-header {
-        background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(88, 47, 192) 50%, rgb(68, 21, 182) 100%);
-        color: white;
-        padding: 3rem 0;
-        margin-bottom: 3rem;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 20px 60px rgba(107, 70, 210, 0.3);
-    }
-
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-        border-radius: 50%;
-    }
-
-    .page-header .container {
-        position: relative;
-        z-index: 2;
-    }
-
-    .page-header h1 {
-        font-size: 2.75rem;
-        font-weight: 800;
-        margin-bottom: 0.5rem;
-        letter-spacing: -1px;
-    }
-
-    .page-header p {
-        font-size: 1.1rem;
-        opacity: 0.9;
-        margin: 0;
-    }
-
-    /* ==================== CONTENT HEADER ==================== */
-    .content-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-    }
-
-    .content-title {
-        font-size: 1.75rem;
-        font-weight: 800;
-        color: rgb(31, 41, 55);
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
-        color: white;
-        border: none;
-        padding: 0.75rem 2rem;
-        border-radius: 0.75rem;
-        font-weight: 700;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(107, 70, 210, 0.3);
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(107, 70, 210, 0.4);
-        color: white;
-        text-decoration: none;
-    }
-
-/* ==================== PROJECTS GRID ==================== */
-    .projects-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-        gap: 2rem;
-        margin-bottom: 3rem;
-    }
-
-    .project-card {
-        background: white;
-        border-radius: 1.25rem;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid rgba(229, 231, 235, 0.5);
-        display: flex;
-        flex-direction: column;
-    }
-
-    .project-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
-    }
-
-    .project-card:hover {
-        transform: translateY(-12px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-        border-color: rgba(107, 70, 210, 0.2);
-    }
-
-    .project-header {
-        padding: 2rem;
-        background: linear-gradient(135deg, rgb(249, 250, 251) 0%, rgb(243, 244, 246) 100%);
-        border-bottom: 1px solid rgba(229, 231, 235, 0.5);
-        position: relative;
-    }
-
-    .project-name {
-        font-size: 1.35rem;
-        font-weight: 800;
-        color: rgb(31, 41, 55);
-        margin-bottom: 0.75rem;
-    }
-
-    .project-description {
-        font-size: 0.95rem;
-        color: rgb(107, 114, 128);
-        line-height: 1.5;
-        margin-bottom: 1rem;
-    }
-
-    .project-status {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        font-weight: 700;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .status-planning {
-        background: rgb(243, 244, 246);
-        color: rgb(55, 65, 81);
-    }
-
-    .status-in-progress {
-        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(91, 200, 255, 0.2) 100%);
-        color: rgb(37, 99, 235);
-    }
-
-    .status-completed {
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 204, 159, 0.2) 100%);
-        color: rgb(5, 150, 105);
-    }
-
-    .project-body {
-        padding: 2rem;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .project-info {
-        margin-bottom: 1.5rem;
-    }
-
-    .info-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 1.25rem;
-        padding-bottom: 1.25rem;
-        border-bottom: 1px solid rgba(229, 231, 235, 0.5);
-    }
-
-    .info-row:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-    }
-
-    .info-label {
-        font-weight: 700;
-        color: rgb(107, 114, 128);
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .info-value {
-        font-weight: 700;
-        color: rgb(31, 41, 55);
-        font-size: 1.1rem;
-    }
-
-    .progress-container {
-        margin-bottom: 1.5rem;
-    }
-
-    .progress-label {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.75rem;
-        font-size: 0.9rem;
-        font-weight: 600;
-    }
-
-    .progress-bar {
-        background: rgb(229, 231, 235);
-        height: 28px;
-        border-radius: 0.75rem;
-        overflow: hidden;
-    }
-
-    .progress-fill {
-        background: linear-gradient(90deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 700;
-        font-size: 0.8rem;
-        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .project-actions {
-        display: flex;
-        gap: 1rem;
-        margin-top: auto;
-    }
-
-    .btn-view {
-        flex: 1;
-        padding: 0.75rem;
-        background: linear-gradient(135deg, rgb(107, 70, 210) 0%, rgb(124, 81, 229) 100%);
-        color: white;
-        border: none;
-        border-radius: 0.5rem;
-        font-weight: 700;
-        cursor: pointer;
-        text-decoration: none;
-        text-align: center;
-        transition: all 0.3s ease;
-    }
-
-    .btn-view:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(107, 70, 210, 0.3);
-    }
-
-    .btn-edit {
-        flex: 1;
-        padding: 0.75rem;
-        background: rgb(229, 231, 235);
-        color: rgb(107, 70, 210);
-        border: none;
-        border-radius: 0.5rem;
-        font-weight: 700;
-        cursor: pointer;
-        text-decoration: none;
-        text-align: center;
-        transition: all 0.3s ease;
-    }
-
-    .btn-edit:hover {
-        background: rgb(209, 213, 219);
-    }
-
-    /* ==================== EMPTY STATE ==================== */
-    .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        background: white;
-        border-radius: 1rem;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(229, 231, 235, 0.5);
-    }
-
-    .empty-icon {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        opacity: 0.3;
-    }
-
-    .empty-title {
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: rgb(31, 41, 55);
-        margin-bottom: 0.5rem;
-    }
-
-    .empty-text {
-        color: rgb(107, 114, 128);
-        font-size: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    /* ==================== CONTAINER ==================== */
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 2rem;
-    }
-
-    /* ==================== RESPONSIVE ==================== */
-    @@media (max-width: 768px) {
-        .page-header h1 {
-            font-size: 1.75rem;
-        }
-
-        .content-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .btn-primary {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .filter-group {
-            grid-template-columns: 1fr;
-        }
-
-        .filter-buttons {
-            flex-direction: column;
-        }
-
-        .btn-filter {
-            width: 100%;
-        }
-
-        .projects-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .project-actions {
-            flex-direction: column;
-        }
-
-        .btn-view,
-        .btn-edit {
-            width: 100%;
-        }
-    }
-</style>
-
-<div class="page-header">
-    <div class="container">
-        <h1><i class="bi bi-folder-check"></i> Projects</h1>
-        <p>Manage and monitor all your construction projects</p>
-    </div>
-</div>
-
-<div class="container">
-    <!-- Header with Create Button -->
-    <div class="content-header">
-        <h2 class="content-title">All Projects</h2>
-        <a asp-controller="Projects" asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> New Project
-        </a>
-    </div>
-
-
-
-    <!-- Projects Grid -->
-    @if (Model.Any())
-    {
-        <div class="projects-grid">
-            @foreach (var project in Model)
-            {
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3 class="project-name">@project.Name</h3>
-                        <p class="project-description">@project.Description</p>
-                        <span class="project-status status-@(project.Status == "Planning" ? "planning" : project.Status == "In Progress" ? "in-progress" : "completed")">
-                            @project.Status
-                        </span>
-                    </div>
-
-                    <div class="project-body">
-                        <div class="project-info">
-                            <div class="info-row">
-                                <span class="info-label">Budget</span>
-                                <span class="info-value">$@project.Budget.ToString("N0")</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">Start Date</span>
-                                <span class="info-value">@project.StartDate.ToString("MMM dd, yyyy")</span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-label">End Date</span>
-                                <span class="info-value">@project.EndDate.ToString("MMM dd, yyyy")</span>
-                            </div>
+        @if (Model.Any())
+        {
+            <div class="app-card-grid">
+                @foreach (var project in Model)
+                {
+                    var progress = Math.Min(project.BudgetUtilization, 100);
+                    <article class="app-card">
+                        <div class="app-card-head">
+                            <h3 class="app-card-title">@project.Name</h3>
+                            <p class="app-card-text">@((string.IsNullOrWhiteSpace(project.Description) ? "No description" : project.Description))</p>
+                            <span class="app-status @(project.Status == "Planning" ? "app-status-planning" : project.Status == "In Progress" ? "app-status-progress" : "app-status-complete")">
+                                @project.Status
+                            </span>
                         </div>
 
+                        <div class="app-card-body">
+                            <div class="app-list">
+                                <div class="app-list-row">
+                                    <span class="app-label">Budget</span>
+                                    <span class="app-value">$@project.Budget.ToString("N0")</span>
+                                </div>
+                                <div class="app-list-row">
+                                    <span class="app-label">Start</span>
+                                    <span class="app-value">@project.StartDate.ToString("MMM dd, yyyy")</span>
+                                </div>
+                                <div class="app-list-row">
+                                    <span class="app-label">End</span>
+                                    <span class="app-value">@project.EndDate.ToString("MMM dd, yyyy")</span>
+                                </div>
+                            </div>
 
+                            <div class="app-help">Budget Utilization</div>
+                            <div class="app-progress">
+                                <div class="app-progress-bar @(project.BudgetUtilization > 90 ? "app-progress-danger" : string.Empty)" style="width:@progress%">
+                                    @project.BudgetUtilization.ToString("F0")%
+                                </div>
+                            </div>
 
-                        <div class="project-actions">
-                            <a asp-controller="Projects" asp-action="Details" asp-route-id="@project.ProjectId" class="btn-view">View Details</a>
-                            <a asp-controller="Projects" asp-action="Edit" asp-route-id="@project.ProjectId" class="btn-edit">Edit</a>
+                            <div class="app-form-actions" style="margin-top:0.9rem; padding-top:0.85rem;">
+                                <a asp-action="Details" asp-route-id="@project.ProjectId" class="app-btn">View</a>
+                                <a asp-action="Edit" asp-route-id="@project.ProjectId" class="app-btn-ghost">Edit</a>
+                            </div>
                         </div>
-                    </div>
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="app-panel">
+                <div class="app-panel-body app-empty">
+                    <h4>No projects yet</h4>
+                    <p>Create your first project to begin planning, tracking, and conflict analysis.</p>
+                    <a asp-action="Create" class="app-btn">Create Project</a>
                 </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="empty-state">
-            <div class="empty-icon">📁</div>
-            <h2 class="empty-title">No Projects Yet</h2>
-            <p class="empty-text">Get started by creating your first construction project</p>
-            <a asp-controller="Projects" asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Create First Project
-            </a>
-        </div>
-    }
-</div>
+            </div>
+        }
+    </div>
+</section>

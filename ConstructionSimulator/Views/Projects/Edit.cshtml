@@ -3,88 +3,82 @@
     ViewData["Title"] = "Edit Project";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0"><i class="bi bi-pencil"></i> Edit Project</h4>
+<section class="app-shell">
+    <div class="app-container">
+        <div class="app-hero">
+            <h1 class="app-hero-title">Edit Project</h1>
+            <p class="app-hero-subtitle">Adjust timeline, budget, and status while keeping simulation metrics in sync.</p>
+        </div>
+
+        <div class="app-form-panel">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="ProjectId" />
+                <input type="hidden" asp-for="CreatedDate" />
+                <input type="hidden" asp-for="ActualCost" />
+
+                <div asp-validation-summary="ModelOnly" class="auth-error"></div>
+
+                <div class="app-form-grid">
+                    <div class="app-field app-field-full">
+                        <label asp-for="Name">Project Name</label>
+                        <input asp-for="Name" />
+                        <span asp-validation-for="Name" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="app-field app-field-full">
+                        <label asp-for="Description">Description</label>
+                        <textarea asp-for="Description" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="app-field">
+                        <label asp-for="StartDate">Start Date</label>
+                        <input asp-for="StartDate" type="date" />
+                        <span asp-validation-for="StartDate" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="app-field">
+                        <label asp-for="EndDate">End Date</label>
+                        <input asp-for="EndDate" type="date" />
+                        <span asp-validation-for="EndDate" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="app-field">
+                        <label asp-for="Budget">Budget ($)</label>
+                        <input asp-for="Budget" type="number" step="0.01" min="0" />
+                        <span asp-validation-for="Budget" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="app-field">
+                        <label asp-for="Status">Status</label>
+                        <select asp-for="Status">
+                            <option value="Planning">Planning</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="On Hold">On Hold</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                        <span asp-validation-for="Status" class="field-validation-error"></span>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form asp-action="Edit" method="post">
-                        <input type="hidden" asp-for="ProjectId" />
-                        <input type="hidden" asp-for="CreatedDate" />
-                        <input type="hidden" asp-for="ActualCost" />
 
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label asp-for="Name" class="form-label">Project Name</label>
-                                <input asp-for="Name" class="form-control" />
-                                <span asp-validation-for="Name" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label">Description</label>
-                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="StartDate" class="form-label">Start Date</label>
-                                <input asp-for="StartDate" type="date" class="form-control" />
-                                <span asp-validation-for="StartDate" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="EndDate" class="form-label">End Date</label>
-                                <input asp-for="EndDate" type="date" class="form-control" />
-                                <span asp-validation-for="EndDate" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Budget" class="form-label">Budget ($)</label>
-                                <input asp-for="Budget" type="number" step="0.01" class="form-control" />
-                                <span asp-validation-for="Budget" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Status" class="form-label">Status</label>
-                                <select asp-for="Status" class="form-select">
-                                    <option value="Planning">Planning</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="On Hold">On Hold</option>
-                                    <option value="Completed">Completed</option>
-                                </select>
-                                <span asp-validation-for="Status" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <div class="alert alert-info">
+                <div class="app-panel" style="margin-top: 1.25rem;">
+                    <div class="app-panel-body">
+                        <p style="margin: 0; color: var(--ciq-text-body);">
                             <strong>Current Costs:</strong> $@Model.ActualCost.ToString("N2")
                             (@Model.BudgetUtilization.ToString("F1")% of budget)
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-4">
-                            <a asp-action="Details" asp-route-id="@Model.ProjectId" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-check-circle"></i> Save Changes (with Simulation)
-                            </button>
-                        </div>
-                    </form>
+                        </p>
+                    </div>
                 </div>
-            </div>
+
+                <div class="app-form-actions">
+                    <a asp-action="Details" asp-route-id="@Model.ProjectId" class="app-btn-secondary">Cancel</a>
+                    <button type="submit" class="app-btn">Save Changes (with Simulation)</button>
+                </div>
+            </form>
         </div>
     </div>
-</div>
+</section>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
 }
