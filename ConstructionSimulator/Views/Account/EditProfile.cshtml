@@ -1,0 +1,31 @@
+﻿@model ConstructionSimulator.ViewModels.EditProfileViewModel
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<section class="app-shell">
+    <div class="app-container">
+        <div class="app-hero">
+            <h1 class="app-hero-title">Edit Profile</h1>
+            <p class="app-hero-subtitle">Update your account name, email, or password securely.</p>
+        </div>
+
+        <div class="app-form-panel">
+            <form asp-action="EditProfile" method="post">
+                <div asp-validation-summary="ModelOnly" class="auth-error"></div>
+
+                <partial name="_ProfileForm" model="Model" />
+
+                <div class="app-form-actions">
+                    <a asp-action="Profile" class="app-btn-secondary">Cancel</a>
+                    <button type="submit" class="app-btn">Save Profile Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

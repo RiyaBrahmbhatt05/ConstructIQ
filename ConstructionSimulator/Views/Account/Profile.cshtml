@@ -1,0 +1,47 @@
+﻿@model ConstructionSimulator.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<section class="app-shell">
+    <div class="app-container">
+        <div class="app-hero">
+            <h1 class="app-hero-title">My Profile</h1>
+            <p class="app-hero-subtitle">Manage your account details and keep your contact information up to date.</p>
+        </div>
+
+        <div class="app-panel">
+            <div class="app-panel-head">
+                <h3>Account Details</h3>
+                <span class="app-status app-status-complete">Active Account</span>
+            </div>
+            <div class="app-panel-body">
+                <div class="app-list" style="margin-bottom: 1rem;">
+                    <div class="app-list-row">
+                        <span class="app-label">Full Name</span>
+                        <span class="app-value">@Model.FullName</span>
+                    </div>
+                    <div class="app-list-row">
+                        <span class="app-label">Email</span>
+                        <span class="app-value">@Model.Email</span>
+                    </div>
+                    <div class="app-list-row">
+                        <span class="app-label">Member Since</span>
+                        <span class="app-value">@Model.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</span>
+                    </div>
+                    <div class="app-list-row">
+                        <span class="app-label">Last Login</span>
+                        <span class="app-value">@(Model.LastLoginAt.HasValue ? Model.LastLoginAt.Value.ToLocalTime().ToString("dd MMM yyyy hh:mm tt") : "Not available")</span>
+                    </div>
+                </div>
+
+                <div class="app-form-actions" style="margin-top: 0;">
+                    <a asp-controller="Home" asp-action="Index" class="app-btn-secondary">Back To Dashboard</a>
+                    <a asp-action="EditProfile" class="app-btn">Edit Profile</a>
+                    <a asp-action="DeleteProfile" class="app-btn-danger">Delete Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

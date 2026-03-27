@@ -1,0 +1,28 @@
+﻿@model ConstructionSimulator.ViewModels.EditProfileViewModel
+
+<div class="app-form-grid">
+    <div class="app-field app-field-full">
+        <label asp-for="FullName"></label>
+        <input asp-for="FullName" />
+        <span asp-validation-for="FullName" class="field-validation-error"></span>
+    </div>
+
+    <div class="app-field app-field-full">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" type="email" />
+        <span asp-validation-for="Email" class="field-validation-error"></span>
+    </div>
+
+    <div class="app-field">
+        <label asp-for="NewPassword"></label>
+        <input asp-for="NewPassword" type="password" autocomplete="new-password" />
+        <div class="app-help">Leave blank if you do not want to change your password.</div>
+        <span asp-validation-for="NewPassword" class="field-validation-error"></span>
+    </div>
+
+    <div class="app-field">
+        <label asp-for="ConfirmNewPassword"></label>
+        <input asp-for="ConfirmNewPassword" type="password" autocomplete="new-password" />
+        <span asp-validation-for="ConfirmNewPassword" class="field-validation-error"></span>
+    </div>
+</div>

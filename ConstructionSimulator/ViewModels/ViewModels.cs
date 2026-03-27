@@ -50,6 +50,51 @@ namespace ConstructionSimulator.ViewModels
         public string Email { get; set; } = string.Empty;
     }
 
+    public class ProfileViewModel
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public DateTime? LastLoginAt { get; set; }
+    }
+
+    public class EditProfileViewModel
+    {
+        [Required(ErrorMessage = "Full Name is required")]
+        [StringLength(256, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 256 characters")]
+        [Display(Name = "Full Name")]
+        public string FullName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email address")]
+        public string Email { get; set; } = string.Empty;
+
+        [StringLength(256, MinimumLength = 6, ErrorMessage = "New Password must be at least 6 characters")]
+        [DataType(DataType.Password)]
+        [Display(Name = "New Password")]
+        public string? NewPassword { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm New Password")]
+        [Compare("NewPassword", ErrorMessage = "New passwords do not match")]
+        public string? ConfirmNewPassword { get; set; }
+    }
+
+    public class DeleteProfileViewModel
+    {
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Password is required")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = string.Empty;
+
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Please confirm account deletion")]
+        [Display(Name = "I understand this action is permanent")]
+        public bool ConfirmDeletion { get; set; }
+    }
+
     public class DashboardViewModel
     {
         public int TotalProjects { get; set; }
