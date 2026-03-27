@@ -1,0 +1,62 @@
+﻿@model ConstructionSimulator.ViewModels.DeleteProfileViewModel
+
+@{
+    ViewData["Title"] = "Delete Account";
+}
+
+<section class="app-shell">
+    <div class="app-container">
+        <div class="app-hero">
+            <h1 class="app-hero-title">Delete Account</h1>
+            <p class="app-hero-subtitle">This action permanently disables your account and signs you out.</p>
+        </div>
+
+        <div class="app-form-panel">
+            <div class="app-warning">
+                <h3>Before You Continue</h3>
+                <p style="margin: 0; color: var(--ciq-text-body);">This action cannot be undone. Please confirm your password to delete your account.</p>
+            </div>
+
+            <div class="app-list" style="margin-bottom: 1rem;">
+                <div class="app-list-row">
+                    <span class="app-label">Full Name</span>
+                    <span class="app-value">@Model.FullName</span>
+                </div>
+                <div class="app-list-row">
+                    <span class="app-label">Email</span>
+                    <span class="app-value">@Model.Email</span>
+                </div>
+            </div>
+
+            <form asp-action="DeleteProfile" method="post">
+                <div asp-validation-summary="ModelOnly" class="auth-error"></div>
+
+                <div class="app-form-grid">
+                    <div class="app-field app-field-full">
+                        <label asp-for="Password"></label>
+                        <input asp-for="Password" type="password" autocomplete="current-password" />
+                        <span asp-validation-for="Password" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="app-field app-field-full" style="display: flex; align-items: flex-end;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+                            <input asp-for="ConfirmDeletion" type="checkbox" /> I understand this action is permanent
+                        </label>
+                    </div>
+                    <div class="app-field app-field-full">
+                        <span asp-validation-for="ConfirmDeletion" class="field-validation-error"></span>
+                    </div>
+                </div>
+
+                <div class="app-form-actions">
+                    <a asp-action="Profile" class="app-btn-secondary">Cancel</a>
+                    <button type="submit" class="app-btn-danger">Delete My Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

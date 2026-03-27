@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ConstructionSimulator.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260313055444_AddApplicationUser")]
-    partial class AddApplicationUser
+    [Migration("20260327054508_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,11 +73,17 @@ namespace ConstructionSimulator.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CrewId"));
 
+                    b.Property<string>("ContactDetails")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("HourlyRate")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
+
+                    b.Property<string>("MemberNames")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -87,12 +93,19 @@ namespace ConstructionSimulator.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RequiredLicenses")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<string>("SkillType")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("TeamSize")
+                        .HasColumnType("int");
+
+                    b.Property<int>("YearsOfExperience")
                         .HasColumnType("int");
 
                     b.HasKey("CrewId");
@@ -122,17 +135,13 @@ namespace ConstructionSimulator.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Supplier")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Unit")
+                    b.Property<string>("UnitType")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -329,6 +338,38 @@ namespace ConstructionSimulator.Migrations
                     b.ToTable("SimulationLogs");
                 });
 
+            modelBuilder.Entity("ConstructionSimulator.Models.TaskMaterial", b =>
+                {
+                    b.Property<int>("TaskMaterialId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskMaterialId"));
+
+                    b.Property<int>("MaterialId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProjectTaskId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("SubtotalCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("UnitsRequired")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("TaskMaterialId");
+
+                    b.HasIndex("MaterialId");
+
+                    b.HasIndex("ProjectTaskId");
+
+                    b.ToTable("TaskMaterials");
+                });
+
             modelBuilder.Entity("ConstructionSimulator.Models.ProjectTask", b =>
                 {
                     b.HasOne("ConstructionSimulator.Models.Crew", "Crew")
@@ -363,9 +404,33 @@ namespace ConstructionSimulator.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("ConstructionSimulator.Models.TaskMaterial", b =>
+                {
+                    b.HasOne("ConstructionSimulator.Models.Material", "Material")
+                        .WithMany("TaskMaterials")
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ConstructionSimulator.Models.ProjectTask", "ProjectTask")
+                        .WithMany()
+                        .HasForeignKey("ProjectTaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Material");
+
+                    b.Navigation("ProjectTask");
+                });
+
             modelBuilder.Entity("ConstructionSimulator.Models.Crew", b =>
                 {
                     b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("ConstructionSimulator.Models.Material", b =>
+                {
+                    b.Navigation("TaskMaterials");
                 });
 
             modelBuilder.Entity("ConstructionSimulator.Models.Permit", b =>
