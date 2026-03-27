@@ -1,0 +1,106 @@
+﻿@model ConstructionSimulator.ViewModels.ContactFormViewModel
+
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
+<section class="contact-shell">
+    <div class="contact-container">
+        <div class="contact-hero">
+            <p class="contact-breadcrumb"><a asp-controller="Landing" asp-action="Index">Home</a> / Contact</p>
+            <h1 class="contact-title">Contact Our Construction Team</h1>
+        </div>
+
+        <div class="contact-grid">
+            <aside class="contact-info">
+                <h2>Let&apos;s Build Something Great</h2>
+                <p>
+                    Inspired by your reference style, this page keeps your existing ConstructorIQ theme and offers a clear way
+                    for clients to request support, pricing, and project consultation.
+                </p>
+
+                <div class="contact-card-list">
+                    <article class="contact-card">
+                        <h3>Office Address</h3>
+                        <p>55 Main Street, 2nd Block, Melbourne, Australia</p>
+                    </article>
+                    <article class="contact-card">
+                        <h3>Email Us</h3>
+                        <a href="mailto:support@constructoriq.com">support@constructoriq.com</a>
+                    </article>
+                    <article class="contact-card">
+                        <h3>Call Us</h3>
+                        <a href="tel:+0001234455">+000 (123) 44 55</a>
+                    </article>
+                </div>
+
+                <div class="contact-hours">
+                    <strong>Working Hours</strong>
+                    Monday to Saturday: 8:00 AM - 6:30 PM
+                </div>
+            </aside>
+
+            <div class="contact-form-panel">
+                <div class="contact-form-head">
+                    <h2>Get A Free Quote</h2>
+                    <p>Send your requirements and we will reach out shortly.</p>
+                </div>
+
+                <div class="contact-form-body">
+                    <form method="post" asp-action="Index" class="contact-form-grid">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="auth-error contact-group-full"></div>
+
+                        <div class="contact-group">
+                            <label asp-for="FullName" class="contact-label">Full Name</label>
+                            <input asp-for="FullName" class="contact-input" placeholder="Your full name" />
+                            <span asp-validation-for="FullName" class="field-validation-error"></span>
+                        </div>
+
+                        <div class="contact-group">
+                            <label asp-for="Email" class="contact-label">Email Address</label>
+                            <input asp-for="Email" class="contact-input" placeholder="you@example.com" />
+                            <span asp-validation-for="Email" class="field-validation-error"></span>
+                        </div>
+
+                        <div class="contact-group">
+                            <label asp-for="PhoneNumber" class="contact-label">Phone Number</label>
+                            <input asp-for="PhoneNumber" class="contact-input" placeholder="+000 (123) 44 55" />
+                            <span asp-validation-for="PhoneNumber" class="field-validation-error"></span>
+                        </div>
+
+                        <div class="contact-group">
+                            <label asp-for="Subject" class="contact-label">Subject</label>
+                            <input asp-for="Subject" class="contact-input" placeholder="Project consultation" />
+                            <span asp-validation-for="Subject" class="field-validation-error"></span>
+                        </div>
+
+                        <div class="contact-group contact-group-full">
+                            <label asp-for="Message" class="contact-label">Message</label>
+                            <textarea asp-for="Message" class="contact-textarea" placeholder="Tell us about your project goals..."></textarea>
+                            <span asp-validation-for="Message" class="field-validation-error"></span>
+                        </div>
+
+                        <button type="submit" class="contact-submit">Send A Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-map">
+            <iframe
+                title="Office location map"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps?q=Melbourne%20Australia&output=embed">
+            </iframe>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

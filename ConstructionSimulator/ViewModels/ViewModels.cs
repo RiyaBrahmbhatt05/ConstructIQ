@@ -90,6 +90,29 @@ namespace ConstructionSimulator.ViewModels
         public int? ScheduleImpactDays { get; set; }
         public DateTime? NewProjectEndDate { get; set; }
     }
+
+    public class ContactFormViewModel
+    {
+        [Required(ErrorMessage = "Full Name is required")]
+        [StringLength(100, ErrorMessage = "Full Name cannot exceed 100 characters")]
+        public string FullName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email address")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Phone Number is required")]
+        [StringLength(25, ErrorMessage = "Phone Number cannot exceed 25 characters")]
+        public string PhoneNumber { get; set; } = string.Empty;
+
+        [StringLength(120, ErrorMessage = "Subject cannot exceed 120 characters")]
+        public string? Subject { get; set; }
+
+        [Required(ErrorMessage = "Message is required")]
+        [StringLength(1500, ErrorMessage = "Message cannot exceed 1500 characters")]
+        public string Message { get; set; } = string.Empty;
+    }
+
     public class ErrorViewModel
     {
         public string? RequestId { get; set; }
