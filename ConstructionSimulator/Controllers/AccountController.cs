@@ -99,6 +99,32 @@ namespace ConstructionSimulator.Controllers
             return RedirectToAction("Login");
         }
 
+        // GET: Account/ForgotPassword
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            if (HttpContext.Session.GetString("UserEmail") != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(new ForgotPasswordViewModel());
+        }
+
+        // POST: Account/ForgotPassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "If an account exists for that email, a password reset link has been sent.";
+            return RedirectToAction("Login");
+        }
+
         // GET: Account/Logout
         [HttpGet]
         public IActionResult Logout()
