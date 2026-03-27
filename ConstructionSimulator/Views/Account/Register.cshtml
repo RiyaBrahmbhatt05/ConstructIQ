@@ -30,11 +30,14 @@
 
                 <div class="auth-body">
                 <form method="post" asp-action="Register" class="auth-form-grid">
-                    @if (ViewBag.ErrorMessage != null)
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
                     {
-                        <div class="auth-error">
+                        <div class="auth-error auth-group-full">
                             <strong>Registration Error</strong>
-                            <p class="mb-0">@ViewBag.ErrorMessage</p>
+                            @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
+                            {
+                                <p class="mb-0">@error.ErrorMessage</p>
+                            }
                         </div>
                     }
 
