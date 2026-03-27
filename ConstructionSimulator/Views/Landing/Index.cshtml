@@ -7,9 +7,9 @@
         margin-left: calc(50% - 50vw);
         margin-right: calc(50% - 50vw);
         width: 100vw;
-        color: #12202b;
+        color: var(--landing-text);
         font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        background: #f4f1eb;
+        background: var(--landing-shell-bg);
     }
 
     .landing-shell * {
@@ -28,7 +28,7 @@
         letter-spacing: 0.16em;
         font-size: 0.78rem;
         font-weight: 700;
-        color: #c05a22;
+        color: var(--landing-eyebrow);
         margin-bottom: 1rem;
     }
 
@@ -41,7 +41,7 @@
     }
 
     .landing-shell .body-text {
-        color: #425363;
+        color: var(--landing-soft-text);
         font-size: 1.05rem;
         line-height: 1.7;
     }
@@ -59,7 +59,7 @@
     }
 
     .landing-shell .btn-main {
-        background: linear-gradient(90deg, #e7722f 0%, #c95e22 100%);
+        background: linear-gradient(90deg, var(--ciq-orange-1) 0%, var(--ciq-orange-2) 100%);
         color: #ffffff;
         box-shadow: 0 12px 28px rgba(193, 96, 36, 0.3);
     }
@@ -71,15 +71,15 @@
     }
 
     .landing-shell .btn-ghost {
-        border: 2px solid #dde5eb;
-        color: #10212f;
-        background-color: rgba(255, 255, 255, 0.8);
+        border: 2px solid var(--landing-ghost-border);
+        color: var(--ciq-navy-1);
+        background-color: var(--landing-ghost-bg);
     }
 
     .landing-shell .btn-ghost:hover {
         transform: translateY(-2px);
-        border-color: #c95e22;
-        color: #c95e22;
+        border-color: var(--ciq-orange-2);
+        color: var(--ciq-orange-2);
     }
 
     .hero-block {
@@ -87,7 +87,7 @@
         overflow: hidden;
         min-height: 680px;
         background:
-            linear-gradient(110deg, rgba(12, 25, 37, 0.95) 0%, rgba(12, 25, 37, 0.78) 42%, rgba(12, 25, 37, 0.32) 100%),
+            var(--landing-hero-overlay),
             url("https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1800&q=80") center/cover no-repeat;
         display: flex;
         align-items: center;
@@ -97,7 +97,7 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 80% 18%, rgba(231, 114, 47, 0.3) 0%, rgba(231, 114, 47, 0) 40%);
+        background: var(--landing-hero-glow);
         pointer-events: none;
     }
 
@@ -113,16 +113,16 @@
 
     .hero-copy {
         max-width: 700px;
-        color: #f8f5ef;
+        color: var(--landing-hero-text);
         animation: heroFade 0.9s ease;
     }
 
     .hero-copy .eyebrow {
-        color: #ff9f5a;
+        color: var(--landing-eyebrow);
     }
 
     .hero-copy .body-text {
-        color: #d7e0e8;
+        color: var(--landing-hero-soft);
         max-width: 620px;
     }
 
@@ -141,9 +141,9 @@
     }
 
     .hero-stat {
-        border: 1px solid rgba(255, 255, 255, 0.24);
+        border: 1px solid var(--landing-hero-stat-border);
         border-radius: 0.7rem;
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--landing-hero-stat-bg);
         padding: 0.9rem 1rem;
         backdrop-filter: blur(5px);
     }
@@ -156,7 +156,7 @@
 
     .hero-stat span {
         font-size: 0.84rem;
-        color: #d2dbe2;
+        color: var(--landing-hero-stat-label);
         letter-spacing: 0.02em;
     }
 
@@ -165,22 +165,22 @@
         width: min(430px, 100%);
         border-radius: 0.9rem;
         overflow: hidden;
-        background: #ffffff;
+        background: var(--landing-card-bg);
         box-shadow: 0 20px 45px rgba(6, 16, 24, 0.35);
         animation: heroFloat 2.4s ease-in-out infinite;
     }
 
     .hero-card .card-top {
         padding: 1.2rem 1.2rem 0.4rem;
-        background: #f8f4ee;
-        border-bottom: 1px solid #efe3d6;
+        background: var(--landing-card-head-bg);
+        border-bottom: 1px solid var(--landing-card-head-border);
     }
 
     .hero-card .card-top h3 {
         font-size: 1rem;
         margin: 0;
         font-weight: 800;
-        color: #163047;
+        color: var(--landing-card-title);
     }
 
     .hero-card .card-main {
@@ -192,7 +192,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 0.8rem 0;
-        border-bottom: 1px dashed #d8e0e7;
+        border-bottom: 1px dashed var(--landing-card-row-border);
     }
 
     .hero-card .site-row:last-child {
@@ -200,7 +200,7 @@
     }
 
     .hero-card .site-row b {
-        color: #142736;
+        color: var(--landing-card-row-text);
     }
 
     .hero-card .pill {
@@ -232,7 +232,7 @@
     }
 
     .about-block {
-        background: linear-gradient(180deg, #f4f1eb 0%, #fefcf9 100%);
+        background: var(--landing-about-bg);
     }
 
     .about-grid {
@@ -260,8 +260,8 @@
         position: absolute;
         left: 1.2rem;
         bottom: 1.2rem;
-        background: #ffffff;
-        border-left: 5px solid #e7722f;
+        background: var(--landing-section-surface);
+        border-left: 5px solid var(--ciq-orange-1);
         padding: 0.9rem 1rem;
         border-radius: 0.45rem;
         box-shadow: 0 12px 22px rgba(12, 26, 37, 0.2);
@@ -270,7 +270,7 @@
     .about-badge strong {
         display: block;
         font-size: 1.5rem;
-        color: #132d42;
+        color: var(--landing-title-strong);
     }
 
     .about-points {
@@ -280,16 +280,16 @@
     }
 
     .about-points div {
-        background: #ffffff;
-        border: 1px solid #e8edf2;
+        background: var(--landing-section-surface);
+        border: 1px solid var(--landing-border-soft);
         border-radius: 0.6rem;
         padding: 0.8rem 1rem;
-        color: #1d3447;
+        color: var(--landing-text);
         font-weight: 600;
     }
 
     .services-block {
-        background: #fefcf9;
+        background: var(--landing-section-bg);
     }
 
     .services-grid {
@@ -300,8 +300,8 @@
     }
 
     .service-card {
-        background: #ffffff;
-        border: 1px solid #e5ecf1;
+        background: var(--landing-section-surface);
+        border: 1px solid var(--landing-border-soft);
         border-radius: 0.75rem;
         padding: 1.3rem;
         transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -316,19 +316,19 @@
         font-size: 0.76rem;
         font-weight: 700;
         letter-spacing: 0.11em;
-        color: #d36c2d;
+        color: var(--ciq-orange-1);
         margin-bottom: 0.6rem;
     }
 
     .service-card h3 {
         font-size: 1.15rem;
         margin-bottom: 0.55rem;
-        color: #0f2739;
+        color: var(--landing-title-strong);
         font-weight: 800;
     }
 
     .service-card p {
-        color: #4a5a68;
+        color: var(--landing-soft-text);
         margin: 0;
         line-height: 1.6;
     }
@@ -375,7 +375,7 @@
     }
 
     .process-block {
-        background: #fbf8f2;
+        background: var(--landing-process-bg);
     }
 
     .process-grid {
@@ -386,8 +386,8 @@
     }
 
     .step-card {
-        background: #ffffff;
-        border: 1px solid #e6edf3;
+        background: var(--landing-section-surface);
+        border: 1px solid var(--landing-border-soft);
         border-radius: 0.65rem;
         padding: 1rem;
         position: relative;
@@ -401,30 +401,30 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, #e7722f 0%, #ba5720 100%);
+        background: linear-gradient(90deg, var(--ciq-orange-1) 0%, var(--ciq-orange-2) 100%);
     }
 
     .step-card span {
         display: inline-block;
         font-size: 0.8rem;
         font-weight: 800;
-        color: #c66229;
+        color: var(--ciq-orange-1);
         margin-bottom: 0.45rem;
     }
 
     .step-card h4 {
         margin-bottom: 0.45rem;
         font-size: 1.06rem;
-        color: #122a3b;
+        color: var(--landing-title-strong);
     }
 
     .step-card p {
         margin: 0;
-        color: #506170;
+        color: var(--landing-soft-text);
     }
 
     .cta-block {
-        background: linear-gradient(95deg, #e7722f 0%, #c05a22 100%);
+        background: linear-gradient(95deg, var(--ciq-orange-1) 0%, var(--ciq-orange-2) 100%);
         color: #ffffff;
         text-align: center;
         position: relative;
@@ -437,7 +437,7 @@
         width: 280px;
         height: 280px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.11);
+        background: var(--landing-cta-overlay);
         top: -90px;
         right: -40px;
     }
@@ -466,7 +466,7 @@
     }
 
     .cta-block .btn-main {
-        background: #10212f;
+        background: var(--ciq-navy-1);
         color: #ffffff;
         box-shadow: 0 12px 28px rgba(13, 24, 34, 0.32);
     }
@@ -622,7 +622,7 @@
                 </div>
                 <div>
                     <span class="eyebrow">About ConstructorIQ</span>
-                    <h2 class="headline" style="font-size: clamp(1.8rem, 3vw, 3rem); color: #102637;">Built for Project Managers, Engineers, and Owners</h2>
+                    <h2 class="headline" style="font-size: clamp(1.8rem, 3vw, 3rem); color: var(--landing-title-strong);">Built for Project Managers, Engineers, and Owners</h2>
                     <p class="body-text">
                         Inspired by modern construction firms, ConstructorIQ combines budget tracking, crew planning, and material control
                         in one clean workflow. You get fast visibility, fewer surprises, and better delivery outcomes.
@@ -640,7 +640,7 @@
     <section class="services-block">
         <div class="section-wrap">
             <span class="eyebrow">Core Services</span>
-            <h2 class="headline" style="font-size: clamp(1.8rem, 3vw, 3rem); color: #112c40;">Professional Construction Intelligence Services</h2>
+            <h2 class="headline" style="font-size: clamp(1.8rem, 3vw, 3rem); color: var(--landing-title-strong);">Professional Construction Intelligence Services</h2>
             <p class="body-text" style="max-width: 760px;">
                 Your existing modules already support operations. This landing layout highlights the same strengths in a modern visual style.
             </p>
@@ -712,7 +712,7 @@
     <section class="process-block">
         <div class="section-wrap">
             <span class="eyebrow">Our Process</span>
-            <h2 class="headline" style="font-size: clamp(1.8rem, 3vw, 3rem); color: #10283a;">How Teams Work With ConstructorIQ</h2>
+            <h2 class="headline" style="font-size: clamp(1.8rem, 3vw, 3rem); color: var(--landing-title-strong);">How Teams Work With ConstructorIQ</h2>
 
             <div class="process-grid">
                 <article class="step-card">

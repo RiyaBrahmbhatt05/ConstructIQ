@@ -6,122 +6,6 @@
     <title>@ViewData["Title"] - Construction Simulator</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <style>
-        :root {
-            --ciq-orange-1: #e7722f;
-            --ciq-orange-2: #c95e22;
-            --ciq-navy: #10212f;
-            --ciq-cream: #f4f1eb;
-            --ciq-text-soft: #d7e0e8;
-        }
-
-        .navbar-ciq {
-            background: linear-gradient(95deg, var(--ciq-orange-1) 0%, var(--ciq-orange-2) 100%);
-            padding: 0.8rem 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
-        }
-
-        .navbar-brand-ciq {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #ffffff;
-            text-decoration: none;
-        }
-
-        .navbar-brand-ciq:hover {
-            color: #ffffff;
-        }
-
-        .nav-link-ciq {
-            color: #ffffff;
-            margin: 0 0.55rem;
-            font-weight: 600;
-            border-radius: 0.35rem;
-            transition: background-color 0.25s ease;
-        }
-
-        .nav-link-ciq:hover,
-        .nav-link-ciq:focus {
-            color: #ffffff;
-            background-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .ciq-btn-login {
-            color: #ffffff;
-            border: 2px solid rgba(255, 255, 255, 0.9);
-            padding: 0.4rem 1.1rem;
-            border-radius: 0.375rem;
-            margin: 0 0.25rem;
-            font-weight: 700;
-        }
-
-        .ciq-btn-login:hover,
-        .ciq-btn-login:focus {
-            color: var(--ciq-orange-2);
-            background-color: #ffffff;
-        }
-
-        .ciq-btn-register {
-            background: var(--ciq-navy);
-            color: #ffffff;
-            padding: 0.4rem 1.1rem;
-            margin: 0 0.25rem;
-            border-radius: 0.375rem;
-            font-weight: 700;
-            border: 2px solid var(--ciq-navy);
-        }
-
-        .ciq-btn-register:hover,
-        .ciq-btn-register:focus {
-            color: var(--ciq-navy);
-            background: #ffffff;
-            border-color: #ffffff;
-        }
-
-        .layout-main {
-            min-height: calc(100vh - 100px);
-            padding: 2rem 0;
-            background-color: var(--ciq-cream);
-        }
-
-        .footer-ciq {
-            background: linear-gradient(95deg, var(--ciq-navy) 0%, #1c3648 100%);
-            color: #ffffff;
-            padding: 2rem 0;
-            margin-top: 3rem;
-            text-align: center;
-            font-size: 0.9rem;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .footer-ciq a {
-            color: #ffb68a;
-            text-decoration: none;
-        }
-
-        .footer-ciq a:hover {
-            color: #ffd0b1;
-            text-decoration: underline;
-        }
-
-        @@media (max-width: 991.98px) {
-            .navbar-ciq .navbar-collapse {
-                margin-top: 0.75rem;
-                background: rgba(0, 0, 0, 0.08);
-                border-radius: 0.5rem;
-                padding: 0.6rem;
-            }
-
-            .nav-link-ciq,
-            .ciq-btn-login,
-            .ciq-btn-register {
-                margin: 0.25rem 0;
-                display: block;
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark navbar-ciq">
@@ -136,6 +20,12 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link nav-link-ciq" asp-area="" asp-controller="Landing" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <button id="themeToggleBtn" class="nav-link ciq-theme-btn" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+                            <span id="themeToggleIcon" aria-hidden="true">🌙</span>
+                            <span id="themeToggleText">Dark</span>
+                        </button>
                     </li>
                     @if (Context.Session.GetString("UserEmail") != null)
                     {
@@ -158,10 +48,10 @@
                                 }
                                 👤 @userName
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 0.5rem;">
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index" style="color: rgb(31,41,55); padding: 0.75rem 1.5rem;">My Projects</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end ciq-dropdown-menu" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item ciq-dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">My Projects</a></li>
                                 <li><hr class="dropdown-divider" style="margin: 0;"></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout" style="color: rgb(31,41,55); padding: 0.75rem 1.5rem;">Logout</a></li>
+                                <li><a class="dropdown-item ciq-dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
                             </ul>
                         </li>
                     }
@@ -189,7 +79,7 @@
         @if (!string.IsNullOrEmpty(successMessage))
         {
             <div class="container mt-4">
-                <div class="alert alert-success alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, rgb(16,185,129) 0%, rgb(5,150,105) 100%); color: white; border: none; border-left: 4px solid rgb(4,120,87); border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <div class="alert alert-success alert-dismissible fade show ciq-alert-success" role="alert">
                     ✓ @successMessage
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -199,7 +89,7 @@
         @if (!string.IsNullOrEmpty(errorMessage))
         {
             <div class="container mt-4">
-                <div class="alert alert-danger alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, rgb(239,68,68) 0%, rgb(220,38,38) 100%); color: white; border: none; border-left: 4px solid rgb(185,28,28); border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <div class="alert alert-danger alert-dismissible fade show ciq-alert-danger" role="alert">
                     ✕ @errorMessage
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -209,7 +99,7 @@
         @if (!string.IsNullOrEmpty(infoMessage))
         {
             <div class="container mt-4">
-                <div class="alert alert-info alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, rgb(59,130,246) 0%, rgb(29,78,216) 100%); color: white; border: none; border-left: 4px solid rgb(30,64,175); border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <div class="alert alert-info alert-dismissible fade show ciq-alert-info" role="alert">
                     ℹ @infoMessage
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
