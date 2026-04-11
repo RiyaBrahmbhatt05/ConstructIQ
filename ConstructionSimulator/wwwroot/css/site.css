@@ -691,13 +691,24 @@ body {
   box-shadow: 0 16px 34px rgba(12, 24, 35, 0.1);
 }
 
-.contact-info h2 {
+.contact-info-expanded {
+  background: var(--ciq-surface);
+  border: 1px solid var(--ciq-border-soft);
+  border-radius: 1.05rem;
+  padding: 1.4rem;
+  box-shadow: 0 16px 34px rgba(12, 24, 35, 0.1);
+  width: 100%;
+}
+
+.contact-info h2,
+.contact-info-expanded h2 {
   margin: 0;
   font-size: 1.35rem;
   color: var(--ciq-text);
 }
 
-.contact-info p {
+.contact-info p,
+.contact-info-expanded p {
   margin: 0.7rem 0 0;
   color: var(--ciq-text-soft);
   line-height: 1.65;
