@@ -100,21 +100,49 @@ namespace ConstructionSimulator.ViewModels
         public int TotalProjects { get; set; }
         public int ActiveProjects { get; set; }
         public int CompletedProjects { get; set; }
+        public int OnTrackProjects { get; set; }
+        public int AtRiskProjects { get; set; }
+        public int DelayedProjects { get; set; }
+        
         public decimal TotalBudget { get; set; }
         public decimal TotalActualCost { get; set; }
+        public decimal BudgetVariance { get; set; }
+        public decimal BudgetVariancePercent { get; set; }
+        
         public int TotalTasks { get; set; }
         public int CompletedTasks { get; set; }
+        public int PendingTasks { get; set; }
         public int OverdueTasks { get; set; }
-
+        public decimal TaskCompletionRate { get; set; }
+        
+        public decimal AverageCostPerTask { get; set; }
+        public decimal TotalCrewHours { get; set; }
+        public decimal AverageCrewUtilization { get; set; }
+        
+        // Chart Data
+        public List<string> BudgetChartLabels { get; set; } = new List<string>();
+        public List<decimal> BudgetChartBudgets { get; set; } = new List<decimal>();
+        public List<decimal> BudgetChartActuals { get; set; } = new List<decimal>();
+        
+        public List<string> TaskCompletionChartLabels { get; set; } = new List<string>();
+        public List<int> TaskCompletionChartData { get; set; } = new List<int>();
+        
+        public int ProjectHealthOnTrackCount { get; set; }
+        public int ProjectHealthAtRiskCount { get; set; }
+        public int ProjectHealthDelayedCount { get; set; }
+        
         public List<Models.Project> RecentProjects { get; set; } = new List<Models.Project>();
         public List<Models.ProjectTask> UpcomingTasks { get; set; } = new List<Models.ProjectTask>();
+        public List<Models.Crew> CrewUtilization { get; set; } = new List<Models.Crew>();
         public List<ConflictAlert> Conflicts { get; set; } = new List<ConflictAlert>();
+        public Alerts.AlertsDashboardViewModel Alerts { get; set; } = new Alerts.AlertsDashboardViewModel();
     }
 
     public class ProjectDetailsViewModel
     {
         public Models.Project? Project { get; set; }
         public List<Models.ProjectTask> Tasks { get; set; } = new List<Models.ProjectTask>();
+        public List<ProjectGanttViewModel> GanttTasks { get; set; } = new List<ProjectGanttViewModel>();
         public List<Models.Crew> AvailableCrews { get; set; } = new List<Models.Crew>();
         public List<Models.Permit> Permits { get; set; } = new List<Models.Permit>();
         public decimal TotalProjectCost { get; set; }

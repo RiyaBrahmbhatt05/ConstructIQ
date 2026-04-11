@@ -1,0 +1,56 @@
+﻿@model ConstructionSimulator.Models.Permit
+
+<div class="app-form-grid">
+    <div class="app-field">
+        <label asp-for="Type"></label>
+        <input asp-for="Type" placeholder="e.g., Building Permit" />
+        <span asp-validation-for="Type" class="field-validation-error"></span>
+    </div>
+
+    <div class="app-field">
+        <label asp-for="Status"></label>
+        <select asp-for="Status">
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Expired">Expired</option>
+        </select>
+        <span asp-validation-for="Status" class="field-validation-error"></span>
+    </div>
+
+    <div class="app-field">
+        <label asp-for="ApplicationDate"></label>
+        <input asp-for="ApplicationDate" type="date" />
+        <span asp-validation-for="ApplicationDate" class="field-validation-error"></span>
+    </div>
+
+    <div class="app-field">
+        <label asp-for="ApprovalDate"></label>
+        <input asp-for="ApprovalDate" type="date" />
+        <span asp-validation-for="ApprovalDate" class="field-validation-error"></span>
+    </div>
+
+    <div class="app-field">
+        <label asp-for="ExpiryDate"></label>
+        <input asp-for="ExpiryDate" type="date" />
+        <span asp-validation-for="ExpiryDate" class="field-validation-error"></span>
+    </div>
+
+    <div class="app-field">
+        <label asp-for="Fee"></label>
+        <input asp-for="Fee" type="number" step="0.01" min="0" />
+        <span asp-validation-for="Fee" class="field-validation-error"></span>
+    </div>
+
+    <div class="app-field app-field-full">
+        <label asp-for="IssuingAuthority"></label>
+        <input asp-for="IssuingAuthority" placeholder="e.g., City Development Office" />
+        <span asp-validation-for="IssuingAuthority" class="field-validation-error"></span>
+    </div>
+
+    <div class="app-field app-field-full">
+        <label asp-for="Notes"></label>
+        <textarea asp-for="Notes" rows="3" placeholder="Optional notes"></textarea>
+        <span asp-validation-for="Notes" class="field-validation-error"></span>
+    </div>
+</div>

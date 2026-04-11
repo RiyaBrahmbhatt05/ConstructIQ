@@ -1,0 +1,30 @@
+﻿@model ConstructionSimulator.Models.Permit
+@{
+    ViewData["Title"] = "Create Permit";
+}
+
+<section class="app-shell">
+    <div class="app-container">
+        <div class="app-hero">
+            <h1 class="app-hero-title">Create Permit</h1>
+            <p class="app-hero-subtitle">Add a permit with status and validity dates for project compliance.</p>
+        </div>
+
+        <div class="app-form-panel">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="auth-error"></div>
+
+                <partial name="_PermitForm" model="Model" />
+
+                <div class="app-form-actions">
+                    <a asp-action="Index" class="app-btn-secondary">Cancel</a>
+                    <button type="submit" class="app-btn">Save Permit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

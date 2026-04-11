@@ -4,6 +4,7 @@
     var project = ViewBag.Project as Project;
     var crews = ViewBag.Crews as List<Crew>;
     var permits = ViewBag.Permits as List<Permit>;
+    var dependencyTasks = ViewBag.Tasks as List<ProjectTask>;
 }
 
 <section class="app-shell">
@@ -124,6 +125,12 @@
                             <label asp-for="Dependencies">Dependencies</label>
                             <input asp-for="Dependencies" placeholder="e.g., 1,2,3" />
                             <div class="app-help">Task IDs this task depends on (comma-separated).</div>
+                            @if (dependencyTasks != null && dependencyTasks.Any())
+                            {
+                                <div class="app-help" style="margin-top:0.35rem;">
+                                    Available task IDs: @string.Join(", ", dependencyTasks.Select(existingTask => $"#{existingTask.ProjectTaskId} - {existingTask.Name}"))
+                                </div>
+                            }
                         </div>
 
                         <div class="app-field app-field-full" style="display: flex; align-items: flex-end;">

@@ -1,0 +1,37 @@
+﻿@model ConstructionSimulator.Models.Permit
+@{
+    ViewData["Title"] = "Permit Details";
+}
+
+<section class="app-shell">
+    <div class="app-container">
+        <div class="app-hero">
+            <h1 class="app-hero-title">Permit Details</h1>
+            <p class="app-hero-subtitle">Review permit compliance data and assignment context.</p>
+        </div>
+
+        <div class="app-panel">
+            <div class="app-panel-head">
+                <h3>@Model.Type</h3>
+                <span class="app-status @(Model.Status == "Approved" ? "app-status-complete" : Model.Status == "Pending" ? "app-status-progress" : "app-status-planning")">@Model.Status</span>
+            </div>
+            <div class="app-panel-body">
+                <div class="app-list" style="margin-bottom: 1rem;">
+                    <div class="app-list-row"><span class="app-label">Application Date</span><span class="app-value">@Model.ApplicationDate.ToString("MMM dd, yyyy")</span></div>
+                    <div class="app-list-row"><span class="app-label">Approval Date</span><span class="app-value">@(Model.ApprovalDate?.ToString("MMM dd, yyyy") ?? "-")</span></div>
+                    <div class="app-list-row"><span class="app-label">Expiry Date</span><span class="app-value">@(Model.ExpiryDate?.ToString("MMM dd, yyyy") ?? "-")</span></div>
+                    <div class="app-list-row"><span class="app-label">Fee</span><span class="app-value">$@Model.Fee.ToString("N2")</span></div>
+                    <div class="app-list-row"><span class="app-label">Issuing Authority</span><span class="app-value">@Model.IssuingAuthority</span></div>
+                    <div class="app-list-row"><span class="app-label">Linked Tasks</span><span class="app-value">@ViewBag.LinkedTasksCount</span></div>
+                    <div class="app-list-row"><span class="app-label">Notes</span><span class="app-value">@(string.IsNullOrWhiteSpace(Model.Notes) ? "-" : Model.Notes)</span></div>
+                </div>
+
+                <div class="app-form-actions" style="margin-top: 0;">
+                    <a asp-action="Index" class="app-btn-secondary">Back</a>
+                    <a asp-action="Edit" asp-route-id="@Model.PermitId" class="app-btn-ghost">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@Model.PermitId" class="app-btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

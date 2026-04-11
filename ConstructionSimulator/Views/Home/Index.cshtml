@@ -16,27 +16,119 @@
         </div>
     </div>
 
+    <!-- Key Metrics Grid -->
     <div class="dash-stats-grid">
         <article class="dash-stat-card">
             <p class="dash-stat-label">Total Projects</p>
             <p class="dash-stat-value">@Model.TotalProjects</p>
-            <p class="dash-stat-meta">Portfolio volume</p>
+            <p class="dash-stat-meta">@Model.ActiveProjects active</p>
         </article>
         <article class="dash-stat-card">
-            <p class="dash-stat-label">Active Projects</p>
-            <p class="dash-stat-value">@Model.ActiveProjects</p>
-            <p class="dash-stat-meta">Currently in progress</p>
+            <p class="dash-stat-label">Task Completion</p>
+            <p class="dash-stat-value">@Model.TaskCompletionRate.ToString("F0")%</p>
+            <p class="dash-stat-meta">@Model.CompletedTasks/@Model.TotalTasks completed</p>
         </article>
         <article class="dash-stat-card">
-            <p class="dash-stat-label">Total Budget</p>
-            <p class="dash-stat-value">$@Model.TotalBudget.ToString("N0")</p>
-            <p class="dash-stat-meta">Allocated funds</p>
+            <p class="dash-stat-label">Budget Status</p>
+            <p class="dash-stat-value">@(Model.BudgetVariancePercent >= 0 ? "+" : "")@Model.BudgetVariancePercent.ToString("F1")%</p>
+            <p class="dash-stat-meta">$@Math.Abs(Model.BudgetVariance).ToString("N0") @(Model.BudgetVariance >= 0 ? "under" : "over") budget</p>
         </article>
         <article class="dash-stat-card">
             <p class="dash-stat-label">Overdue Tasks</p>
             <p class="dash-stat-value">@Model.OverdueTasks</p>
-            <p class="dash-stat-meta">Need immediate review</p>
+            <p class="dash-stat-meta">Require attention</p>
         </article>
+    </div>
+
+    @if (Model.Alerts != null && Model.Alerts.HasAlerts)
+    {
+        <section class="dash-panel dash-panel-alerts">
+            <div class="dash-panel-head">
+                <h2>Smart Alerts (@Model.Alerts.TotalAlerts)</h2>
+                <div class="dash-alert-summary">
+                    @if (Model.Alerts.CriticalCount > 0)
+                    {
+                        <span class="dash-alert-chip dash-alert-chip-critical">Critical: @Model.Alerts.CriticalCount</span>
+                    }
+                    @if (Model.Alerts.HighCount > 0)
+                    {
+                        <span class="dash-alert-chip dash-alert-chip-high">High: @Model.Alerts.HighCount</span>
+                    }
+                    @if (Model.Alerts.MediumCount > 0)
+                    {
+                        <span class="dash-alert-chip dash-alert-chip-medium">Medium: @Model.Alerts.MediumCount</span>
+                    }
+                </div>
+            </div>
+            <div class="dash-panel-body">
+                <div class="dash-list">
+                    @foreach (var alert in Model.Alerts.AlertItems.Take(8))
+                    {
+                        <article class="dash-list-item dash-alert-item">
+                            <div>
+                                <span class="dash-tag dash-alert-severity @(alert.Severity == "Critical" ? "dash-alert-critical" : alert.Severity == "High" ? "dash-alert-high" : "dash-alert-medium")">@alert.Severity</span>
+                                <span class="dash-tag dash-alert-type">@alert.Type</span>
+                                <span class="dash-conflict-message"><strong>@alert.Title:</strong> @alert.Message</span>
+                            </div>
+                            <small>@alert.CreatedAtUtc.ToLocalTime().ToString("MMM dd, yyyy HH:mm")</small>
+                        </article>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+
+    <!-- Project Health Status -->
+    <section class="dash-panel">
+        <div class="dash-panel-head">
+            <h2>Project Health Indicators</h2>
+        </div>
+        <div class="dash-panel-body dash-health-grid">
+            <div class="dash-health-card dash-health-ontrack">
+                <div class="dash-health-number">@Model.ProjectHealthOnTrackCount</div>
+                <div class="dash-health-label">On Track</div>
+                <div class="dash-health-bar" style="background: #10b981; width: 100%;"></div>
+            </div>
+            <div class="dash-health-card dash-health-atrisk">
+                <div class="dash-health-number">@Model.ProjectHealthAtRiskCount</div>
+                <div class="dash-health-label">At Risk</div>
+                <div class="dash-health-bar" style="background: #f59e0b; width: 100%;"></div>
+            </div>
+            <div class="dash-health-card dash-health-delayed">
+                <div class="dash-health-number">@Model.ProjectHealthDelayedCount</div>
+                <div class="dash-health-label">Delayed</div>
+                <div class="dash-health-bar" style="background: #ef4444; width: 100%;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Section -->
+    <div class="dash-charts-grid">
+        <!-- Budget vs Actual Chart -->
+        @if (Model.BudgetChartLabels.Any())
+        {
+            <section class="dash-panel dash-chart-panel">
+                <div class="dash-panel-head">
+                    <h2>Budget vs Actual Cost</h2>
+                </div>
+                <div class="dash-panel-body">
+                    <canvas id="budgetChart"></canvas>
+                </div>
+            </section>
+        }
+
+        <!-- Task Completion Chart -->
+        @if (Model.TaskCompletionChartLabels.Any())
+        {
+            <section class="dash-panel dash-chart-panel">
+                <div class="dash-panel-head">
+                    <h2>Task Completion Trend</h2>
+                </div>
+                <div class="dash-panel-body">
+                    <canvas id="completionChart"></canvas>
+                </div>
+            </section>
+        }
     </div>
 
     @if (Model.Conflicts.Any())
@@ -157,3 +249,487 @@
         </section>
     </div>
 </section>
+
+<style>
+    .dash-panel-alerts {
+        border: 1px solid rgba(234, 106, 42, 0.22);
+        background: linear-gradient(180deg, #fffdf9 0%, #fff6ec 100%);
+        box-shadow: 0 10px 28px rgba(234, 106, 42, 0.10);
+    }
+
+    .dash-alert-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .dash-alert-chip {
+        padding: 0.3rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .dash-alert-chip-critical {
+        background: #fff4eb;
+        color: #c2410c;
+        border: 1px solid rgba(234, 106, 42, 0.20);
+    }
+
+    .dash-alert-chip-high {
+        background: #fff8e8;
+        color: #d97706;
+        border: 1px solid rgba(234, 106, 42, 0.16);
+    }
+
+    .dash-alert-chip-medium {
+        background: #fffdf0;
+        color: #a16207;
+        border: 1px solid rgba(234, 106, 42, 0.14);
+    }
+
+    .dash-alert-item {
+        border-left: 4px solid #ea6a2a;
+        background: rgba(255, 255, 255, 0.82);
+        box-shadow: 0 1px 0 rgba(234, 106, 42, 0.05);
+    }
+
+    .dash-alert-severity {
+        background: #fff6eb;
+        color: #9a3412;
+        border: 1px solid rgba(234, 106, 42, 0.18);
+    }
+
+    .dash-alert-critical {
+        background: #fff1e7;
+        color: #b45309;
+        border-color: rgba(234, 106, 42, 0.24);
+    }
+
+    .dash-alert-high {
+        background: #fff7e7;
+        color: #c2410c;
+        border-color: rgba(234, 106, 42, 0.20);
+    }
+
+    .dash-alert-medium {
+        background: #fffdf2;
+        color: #a16207;
+        border-color: rgba(234, 106, 42, 0.16);
+    }
+
+    .dash-alert-type {
+        background: #f8f1e8;
+        color: #7c2d12;
+        border: 1px solid rgba(124, 45, 18, 0.10);
+    }
+
+    .dash-health-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .dash-health-card {
+        text-align: center;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        border: 1px solid #e5e7eb;
+        background: #fafafa;
+    }
+
+    .dash-health-number {
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+    }
+
+    .dash-health-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 0.75rem;
+    }
+
+    .dash-health-bar {
+        height: 6px;
+        border-radius: 3px;
+    }
+
+    .dash-charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .dash-chart-panel {
+        min-height: 400px;
+    }
+
+    .dash-chart-panel .dash-panel-body {
+        position: relative;
+        height: 350px;
+    }
+
+    #chatToggle {
+        position: fixed;
+        right: 1.5rem;
+        bottom: 1.5rem;
+        z-index: 1050;
+        border: none;
+        cursor: pointer;
+    }
+
+    .dash-chat-widget {
+        width: 360px;
+        max-width: calc(100vw - 2rem);
+        display: none;
+        position: fixed;
+        right: 1.5rem;
+        bottom: 5.5rem;
+        z-index: 1050;
+        background: white;
+        border: 1px solid rgba(229, 231, 235, 0.9);
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 20px 45px rgba(17, 24, 39, 0.18);
+    }
+
+    .dash-chat-header {
+        background: linear-gradient(135deg, #111827 0%, #ea6a2a 100%);
+        color: #ffffff;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .dash-chat-title {
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    .dash-chat-subtitle {
+        font-size: 0.8rem;
+        opacity: 0.92;
+        margin-top: 0.2rem;
+        color: rgba(255,255,255,0.85);
+    }
+
+    .dash-chat-close {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        border: none;
+        background: rgba(255, 255, 255, 0.16);
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+
+    .dash-chat-box {
+        height: 320px;
+        overflow-y: auto;
+        padding: 0.9rem;
+        background: linear-gradient(180deg, #fafafe 0%, #f6f4ff 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .dash-chat-message {
+        max-width: 88%;
+        padding: 0.8rem 0.95rem;
+        border-radius: 14px;
+        line-height: 1.5;
+        font-size: 0.94rem;
+        word-break: break-word;
+    }
+
+    .dash-chat-assistant {
+        align-self: flex-start;
+        background: #ffffff;
+        border: 1px solid #e8e4fb;
+        color: rgb(31, 41, 55);
+    }
+
+    .dash-chat-user {
+        align-self: flex-end;
+        background: rgba(234, 106, 42, 0.15);
+        border: 1px solid rgba(234, 106, 42, 0.25);
+        color: rgb(31, 41, 55);
+    }
+
+    .dash-chat-error {
+        align-self: flex-start;
+        background: #fff1f2;
+        border: 1px solid #fecdd3;
+        color: #be123c;
+    }
+
+    .dash-chat-input-wrap {
+        padding: 0.85rem;
+        border-top: 1px solid rgba(229, 231, 235, 0.8);
+        background: #fff;
+    }
+
+    .dash-chat-input {
+        width: 100%;
+        border: 1px solid rgba(209, 213, 219, 1);
+        border-radius: 12px;
+        padding: 0.8rem 0.95rem;
+        font-size: 0.95rem;
+        outline: none;
+        min-height: 46px;
+    }
+
+        .dash-chat-input:focus {
+            border-color: rgb(107, 70, 210);
+            box-shadow: 0 0 0 3px rgba(107, 70, 210, 0.12);
+        }
+
+    .dash-chat-send {
+        width: 100%;
+        margin-top: 0.65rem;
+    }
+
+    @@media (max-width: 768px) {
+        #chatToggle {
+            right: 1rem;
+            bottom: 1rem;
+        }
+
+        .dash-chat-widget {
+            right: 1rem;
+            left: 1rem;
+            bottom: 5rem;
+            width: auto;
+            max-width: none;
+        }
+
+        .dash-charts-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dash-health-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Budget vs Actual Chart
+    @if (Model.BudgetChartLabels.Any())
+    {
+        <text>
+        const budgetCtx = document.getElementById('budgetChart')?.getContext('2d');
+        if (budgetCtx) {
+            new Chart(budgetCtx, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.BudgetChartLabels)),
+                    datasets: [
+                        {
+                            label: 'Budget',
+                            data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.BudgetChartBudgets)),
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                            borderColor: 'rgb(59, 130, 246)',
+                            borderWidth: 1.5
+                        },
+                        {
+                            label: 'Actual Cost',
+                            data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.BudgetChartActuals)),
+                            backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                            borderColor: 'rgb(239, 68, 68)',
+                            borderWidth: 1.5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: { size: 12, weight: 600 },
+                                padding: 15,
+                                usePointStyle: true
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + (value / 1000).toFixed(0) + 'K';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        </text>
+    }
+
+    // Task Completion Trend Chart
+    @if (Model.TaskCompletionChartLabels.Any())
+    {
+        <text>
+        const completionCtx = document.getElementById('completionChart')?.getContext('2d');
+        if (completionCtx) {
+            new Chart(completionCtx, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TaskCompletionChartLabels)),
+                    datasets: [{
+                        label: 'Tasks Completed',
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TaskCompletionChartData)),
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 5,
+                        pointBackgroundColor: 'rgb(16, 185, 129)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: { size: 12, weight: 600 },
+                                padding: 15,
+                                usePointStyle: true
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        </text>
+    }
+</script>
+
+<button id="chatToggle" class="dash-btn" type="button" onclick="toggleChat()">
+    AI Chat
+</button>
+
+<div id="chatWindow" class="dash-chat-widget">
+    <div class="dash-chat-header">
+        <div>
+            <div class="dash-chat-title">ConstructIQ Assistant</div>
+            <div class="dash-chat-subtitle">Ask me anything about your project</div>
+        </div>
+        <button type="button" class="dash-chat-close" onclick="toggleChat()">✕</button>
+    </div>
+
+    <div id="chatBox" class="dash-chat-box">
+        <div class="dash-chat-message dash-chat-assistant">
+            <strong>Assistant:</strong> Hi! I can help you with ConstructIQ.
+        </div>
+    </div>
+
+    <div class="dash-chat-input-wrap">
+        <input type="text" id="userMessage" class="dash-chat-input" placeholder="Ask something..." />
+        <button type="button" class="dash-btn dash-chat-send" onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+    function toggleChat() {
+        const chat = document.getElementById("chatWindow");
+        if (!chat) return;
+        chat.style.display = chat.style.display === "block" ? "none" : "block";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const userMessage = document.getElementById("userMessage");
+
+        if (userMessage) {
+            userMessage.addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        }
+    });
+
+    async function sendMessage() {
+        const input = document.getElementById("userMessage");
+        const chatBox = document.getElementById("chatBox");
+
+        if (!input || !chatBox) return;
+
+        const message = input.value.trim();
+        if (!message) return;
+
+        chatBox.innerHTML += `
+            <div class="dash-chat-message dash-chat-user">
+                <strong>You:</strong> ${escapeHtml(message)}
+            </div>`;
+
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            const response = await fetch('/Chat/Ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+
+            if (data.reply) {
+                chatBox.innerHTML += `
+                    <div class="dash-chat-message dash-chat-assistant">
+                        <strong>Assistant:</strong> ${escapeHtml(data.reply).replace(/\n/g, "<br>")}
+                    </div>`;
+            } else if (data.error) {
+                chatBox.innerHTML += `
+                    <div class="dash-chat-message dash-chat-error">
+                        <strong>Error:</strong> ${escapeHtml(data.error)}
+                    </div>`;
+            } else {
+                chatBox.innerHTML += `
+                    <div class="dash-chat-message dash-chat-error">
+                        <strong>Error:</strong> Could not get response.
+                    </div>`;
+            }
+        } catch {
+            chatBox.innerHTML += `
+                <div class="dash-chat-message dash-chat-error">
+                    <strong>Error:</strong> Request failed.
+                </div>`;
+        }
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.innerText = text;
+        return div.innerHTML;
+    }
+</script>

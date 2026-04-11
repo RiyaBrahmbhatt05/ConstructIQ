@@ -6,6 +6,9 @@
     decimal budgetDifference = ViewBag.BudgetDifference != null ? (decimal)ViewBag.BudgetDifference : 0m;
     bool isOverBudget = ViewBag.IsOverBudget != null ? (bool)ViewBag.IsOverBudget : false;
     var breakdown = ViewBag.CostBreakdown as Dictionary<string, decimal>;
+    var ganttStart = ViewBag.GanttStart != null ? (DateTime)ViewBag.GanttStart : DateTime.Today;
+    var ganttEnd = ViewBag.GanttEnd != null ? (DateTime)ViewBag.GanttEnd : DateTime.Today.AddDays(30);
+    var ganttSpanDays = ViewBag.GanttSpanDays != null ? (int)ViewBag.GanttSpanDays : 1;
 }
 
 <section class="app-shell">
@@ -176,6 +179,66 @@
             </div>
         </section>
 
+        <section class="app-panel" style="margin-bottom:1rem;">
+            <div class="app-panel-head">
+                <h3>Gantt Timeline</h3>
+                <span class="dash-muted">@ganttStart.ToString("MMM dd, yyyy") - @ganttEnd.ToString("MMM dd, yyyy")</span>
+            </div>
+            <div class="app-panel-body">
+                @if (Model.GanttTasks.Any())
+                {
+                    <div class="gantt-legend">
+                        <span class="gantt-legend-item"><span class="gantt-legend-swatch" style="background:#10b981"></span>Completed</span>
+                        <span class="gantt-legend-item"><span class="gantt-legend-swatch" style="background:#3b82f6"></span>In Progress</span>
+                        <span class="gantt-legend-item"><span class="gantt-legend-swatch" style="background:#dc2626"></span>Overdue</span>
+                        <span class="gantt-legend-item"><span class="gantt-legend-swatch" style="background:#ef4444"></span>Blocked</span>
+                        <span class="gantt-legend-item"><span class="gantt-legend-swatch" style="background:#6b7280"></span>Pending</span>
+                    </div>
+
+                    <div class="gantt-wrap" id="ganttWrap">
+                        <div class="gantt-surface" id="ganttSurface">
+                            <div class="gantt-body">
+                                @foreach (var task in Model.GanttTasks)
+                                {
+                                    var leftPercent = ganttSpanDays > 0 ? (task.StartOffsetDays * 100.0 / ganttSpanDays) : 0;
+                                    var widthPercent = ganttSpanDays > 0 ? (task.BarWidthDays * 100.0 / ganttSpanDays) : 100;
+                                    if (widthPercent < 3) { widthPercent = 3; }
+
+                                    <div class="gantt-row">
+                                        <div class="gantt-label">
+                                            <div class="dash-strong">@task.Name</div>
+                                            <div class="dash-muted">@task.StartDate.ToString("MMM dd") - @task.EndDate.ToString("MMM dd")</div>
+                                            <div class="gantt-meta">
+                                                <span class="dash-tag @(task.IsOverdue ? "dash-tag-danger" : task.Status == "Completed" ? "dash-tag-success" : task.Status == "In Progress" ? "dash-tag-primary" : "dash-tag-secondary")">@task.Status</span>
+                                                <span class="dash-tag @(task.Priority == "Critical" ? "dash-tag-danger" : task.Priority == "High" ? "dash-tag-warning" : task.Priority == "Medium" ? "dash-tag-info" : "dash-tag-secondary")">@task.Priority</span>
+                                            </div>
+                                        </div>
+                                        <div class="gantt-track">
+                                            <div class="gantt-bar @(task.IsOverdue ? "gantt-bar-overdue" : string.Empty)"
+                                                 data-task-id="@task.ProjectTaskId"
+                                                 data-dependencies="@task.DependencyTaskIds"
+                                                 style="left:@leftPercent%; width:@widthPercent%; background:@task.BarColor;">
+                                                <span class="gantt-bar-text">@task.ProgressPercent.ToString("F0")%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <svg class="gantt-dependencies" id="ganttDependencies" aria-hidden="true"></svg>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="app-empty">
+                        <h4>No timeline data yet</h4>
+                        <p>Add project tasks with start and end dates to generate the Gantt chart.</p>
+                    </div>
+                }
+            </div>
+        </section>
+
         <div class="app-form-actions">
             <a asp-action="Index" class="app-btn-secondary">Back to Projects</a>
             <a asp-action="Edit" asp-route-id="@Model.Project?.ProjectId" class="app-btn-ghost">Edit Project</a>
@@ -183,3 +246,208 @@
         </div>
     </div>
 </section>
+
+<style>
+    .gantt-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.85rem 1.1rem;
+        margin-bottom: 0.85rem;
+        color: #374151;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .gantt-legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+    }
+
+    .gantt-legend-swatch {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        display: inline-block;
+    }
+
+    .gantt-wrap {
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-top: 0.25rem;
+    }
+
+    .gantt-surface {
+        position: relative;
+        min-width: 920px;
+        padding-bottom: 0.5rem;
+    }
+
+    .gantt-body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+    }
+
+    .gantt-row {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .gantt-label {
+        padding-right: 0.5rem;
+    }
+
+    .gantt-track {
+        position: relative;
+        height: 42px;
+        border-radius: 12px;
+        background: linear-gradient(90deg, #f3f4f6 0%, #fafafa 100%);
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .gantt-bar {
+        position: absolute;
+        top: 7px;
+        height: 28px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 0.78rem;
+        font-weight: 700;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+        padding: 0 0.5rem;
+        min-width: 3rem;
+    }
+
+    .gantt-bar-overdue {
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.18), 0 8px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .gantt-bar-text {
+        white-space: nowrap;
+    }
+
+    .gantt-dependencies {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+        pointer-events: none;
+    }
+
+    .gantt-edge {
+        stroke: #94a3b8;
+        stroke-width: 2;
+        fill: none;
+        stroke-dasharray: 6 5;
+        opacity: 0.95;
+    }
+
+    .gantt-edge-highlight {
+        stroke: #ef4444;
+        opacity: 1;
+    }
+
+    .gantt-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        margin-top: 0.35rem;
+    }
+
+    @@media (max-width: 768px) {
+        .gantt-row {
+            grid-template-columns: 1fr;
+        }
+
+        .gantt-track {
+            min-width: 100%;
+        }
+
+        .gantt-surface {
+            min-width: 760px;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ganttSurface = document.getElementById("ganttSurface");
+        const svg = document.getElementById("ganttDependencies");
+
+        if (!ganttSurface || !svg) {
+            return;
+        }
+
+        const renderDependencyLines = () => {
+            const bars = Array.from(ganttSurface.querySelectorAll(".gantt-bar[data-task-id]"));
+            const svgRect = ganttSurface.getBoundingClientRect();
+            const width = Math.max(ganttSurface.scrollWidth, ganttSurface.clientWidth);
+            const height = Math.max(ganttSurface.scrollHeight, ganttSurface.clientHeight);
+
+            svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+            svg.setAttribute("width", width);
+            svg.setAttribute("height", height);
+            svg.innerHTML = `
+                <defs>
+                    <marker id="ganttArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0,0 L0,6 L8,3 z" fill="#94a3b8"></path>
+                    </marker>
+                    <marker id="ganttArrowHighlight" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0,0 L0,6 L8,3 z" fill="#ef4444"></path>
+                    </marker>
+                </defs>`;
+
+            const getCenter = (rect, direction) => ({
+                x: direction === "start" ? rect.left - svgRect.left : rect.right - svgRect.left,
+                y: rect.top - svgRect.top + (rect.height / 2)
+            });
+
+            const createEdge = (fromRect, toRect, highlight) => {
+                const start = getCenter(fromRect, "end");
+                const end = getCenter(toRect, "start");
+                const curveOffset = Math.max(Math.abs(end.x - start.x) * 0.35, 40);
+                const controlX1 = start.x + curveOffset;
+                const controlX2 = end.x - curveOffset;
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute("d", `M ${start.x} ${start.y} C ${controlX1} ${start.y}, ${controlX2} ${end.y}, ${end.x} ${end.y}`);
+                path.setAttribute("class", highlight ? "gantt-edge gantt-edge-highlight" : "gantt-edge");
+                path.setAttribute("marker-end", highlight ? "url(#ganttArrowHighlight)" : "url(#ganttArrow)");
+                svg.appendChild(path);
+            };
+
+            bars.forEach(bar => {
+                const dependencies = (bar.dataset.dependencies || "")
+                    .split(",")
+                    .map(x => x.trim())
+                    .filter(Boolean);
+
+                if (!dependencies.length) {
+                    return;
+                }
+
+                const toRect = bar.getBoundingClientRect();
+                dependencies.forEach(depId => {
+                    const fromBar = ganttSurface.querySelector(`.gantt-bar[data-task-id="${depId}"]`);
+                    if (!fromBar || fromBar === bar) {
+                        return;
+                    }
+
+                    createEdge(fromBar.getBoundingClientRect(), toRect, bar.classList.contains("gantt-bar-overdue"));
+                });
+            });
+        };
+
+        renderDependencyLines();
+        window.addEventListener("resize", renderDependencyLines);
+        window.addEventListener("load", renderDependencyLines);
+    });
+</script>

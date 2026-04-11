@@ -1,0 +1,57 @@
+﻿@model ConstructionSimulator.Models.Permit
+@{
+    ViewData["Title"] = "Delete Permit";
+}
+
+<section class="app-shell">
+    <div class="app-container">
+        <div class="app-hero">
+            <h1 class="app-hero-title">Delete Permit</h1>
+            <p class="app-hero-subtitle">Confirm removal of this permit record from your compliance registry.</p>
+        </div>
+
+        <div class="app-panel">
+            <div class="app-panel-head">
+                <h3>Confirm Deletion</h3>
+                <span class="app-status app-status-planning">Permanent Action</span>
+            </div>
+            <div class="app-panel-body">
+                @if ((int)ViewBag.LinkedTasksCount > 0)
+                {
+                    <div class="app-warning">
+                        <h3>Cannot Delete Yet</h3>
+                        <p style="margin: 0; color: var(--ciq-text-body);">
+                            This permit is currently assigned to @ViewBag.LinkedTasksCount task(s). Remove permit assignment from those tasks first.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <div class="app-warning">
+                        <h3>Warning</h3>
+                        <p style="margin: 0; color: var(--ciq-text-body);">This action cannot be undone.</p>
+                    </div>
+                }
+
+                <div class="app-list" style="margin-bottom: 1rem;">
+                    <div class="app-list-row"><span class="app-label">Type</span><span class="app-value">@Model.Type</span></div>
+                    <div class="app-list-row"><span class="app-label">Status</span><span class="app-value">@Model.Status</span></div>
+                    <div class="app-list-row"><span class="app-label">Application Date</span><span class="app-value">@Model.ApplicationDate.ToString("MMM dd, yyyy")</span></div>
+                    <div class="app-list-row"><span class="app-label">Issuing Authority</span><span class="app-value">@Model.IssuingAuthority</span></div>
+                    <div class="app-list-row"><span class="app-label">Linked Tasks</span><span class="app-value">@ViewBag.LinkedTasksCount</span></div>
+                </div>
+
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" name="id" value="@Model.PermitId" />
+                    <div class="app-form-actions" style="margin-top: 0;">
+                        <a asp-action="Index" class="app-btn-secondary">Back</a>
+                        @if ((int)ViewBag.LinkedTasksCount == 0)
+                        {
+                            <button type="submit" class="app-btn-danger">Delete Permit</button>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

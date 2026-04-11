@@ -24,12 +24,20 @@ namespace ConstructionSimulator.Controllers
         // GET: Tasks/Create
         public IActionResult Create(int projectId)
         {
-            ViewBag.ProjectId = projectId;
-            ViewBag.Project = _context.Projects.FirstOrDefault(p => p.ProjectId == projectId);
-            ViewBag.Crews = _context.Crews.ToList();
-            ViewBag.Permits = _context.Permits.ToList();
-            ViewBag.Tasks = _context.Tasks.Where(t => t.ProjectId == projectId).ToList();
-            ViewBag.MaterialsList = _context.Materials.ToList();
+            if (projectId <= 0)
+            {
+                TempData["ErrorMessage"] = "Please select a project first before creating a task.";
+                return RedirectToAction("Index", "Projects");
+            }
+
+            var project = _context.Projects.FirstOrDefault(p => p.ProjectId == projectId);
+            if (project == null)
+            {
+                TempData["ErrorMessage"] = "Project not found.";
+                return RedirectToAction("Index", "Projects");
+            }
+
+            PopulateTaskViewBags(projectId);
 
             return View();
         }
@@ -37,22 +45,37 @@ namespace ConstructionSimulator.Controllers
         // POST: Tasks/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ProjectTask task, int[] materialIds, decimal[] unitsRequired)
+        public IActionResult Create(ProjectTask task, int[]? materialIds, decimal[]? unitsRequired)
         {
+            if (task.ProjectId <= 0)
+            {
+                ModelState.AddModelError(nameof(task.ProjectId), "Project is required.");
+            }
+
             if (ModelState.IsValid)
             {
+                if (!ValidateDependencies(task))
+                {
+                    PopulateTaskViewBags(task.ProjectId);
+                    return View(task);
+                }
+
                 var simulationResult = _simulationEngine.SimulateTaskChange(task.ProjectId, task, isNewTask: true);
+
+                if (!simulationResult.Success)
+                {
+                    TempData["ErrorMessage"] = simulationResult.Message;
+                    ModelState.AddModelError(string.Empty, simulationResult.Message);
+                    PopulateTaskViewBags(task.ProjectId);
+                    return View(task);
+                }
 
                 if (simulationResult.Conflicts.Any(c => c.Severity == "Critical"))
                 {
                     TempData["ErrorMessage"] = simulationResult.Message;
+                    ModelState.AddModelError(string.Empty, simulationResult.Message);
                     ViewBag.Conflicts = simulationResult.Conflicts;
-                    ViewBag.ProjectId = task.ProjectId;
-                    ViewBag.Project = _context.Projects.FirstOrDefault(p => p.ProjectId == task.ProjectId);
-                    ViewBag.Crews = _context.Crews.ToList();
-                    ViewBag.Permits = _context.Permits.ToList();
-                    ViewBag.Tasks = _context.Tasks.Where(t => t.ProjectId == task.ProjectId).ToList();
-                    ViewBag.MaterialsList = _context.Materials.ToList();
+                    PopulateTaskViewBags(task.ProjectId);
                     return View(task);
                 }
 
@@ -65,6 +88,7 @@ namespace ConstructionSimulator.Controllers
 
                 // Auto-calculate and save task cost
                 _costCalculator.RecalculateAndSaveTaskCost(task.ProjectTaskId);
+                _costCalculator.RecalculateAndSaveProjectCost(task.ProjectId);
 
                 _context.SimulationLogs.Add(new SimulationLog
                 {
@@ -89,12 +113,7 @@ namespace ConstructionSimulator.Controllers
                 return RedirectToAction("Details", "Projects", new { id = task.ProjectId });
             }
 
-            ViewBag.ProjectId = task.ProjectId;
-            ViewBag.Project = _context.Projects.FirstOrDefault(p => p.ProjectId == task.ProjectId);
-            ViewBag.Crews = _context.Crews.ToList();
-            ViewBag.Permits = _context.Permits.ToList();
-            ViewBag.Tasks = _context.Tasks.Where(t => t.ProjectId == task.ProjectId).ToList();
-            ViewBag.MaterialsList = _context.Materials.ToList();
+            PopulateTaskViewBags(task.ProjectId);
             return View(task);
         }
 
@@ -108,13 +127,7 @@ namespace ConstructionSimulator.Controllers
                 return NotFound();
             }
 
-            ViewBag.Project = _context.Projects.FirstOrDefault(p => p.ProjectId == task.ProjectId);
-            ViewBag.Crews = _context.Crews.ToList();
-            ViewBag.Permits = _context.Permits.ToList();
-            ViewBag.Tasks = _context.Tasks
-                .Where(t => t.ProjectId == task.ProjectId && t.ProjectTaskId != id)
-                .ToList();
-            ViewBag.MaterialsList = _context.Materials.ToList();
+            PopulateTaskViewBags(task.ProjectId, id);
 
             return View(task);
         }
@@ -131,19 +144,20 @@ namespace ConstructionSimulator.Controllers
 
             if (ModelState.IsValid)
             {
+                if (!ValidateDependencies(task, id))
+                {
+                    PopulateTaskViewBags(task.ProjectId, id);
+                    return View(task);
+                }
+
                 var simulationResult = _simulationEngine.SimulateTaskChange(task.ProjectId, task, isNewTask: false);
 
                 if (simulationResult.Conflicts.Any(c => c.Severity == "Critical"))
                 {
                     TempData["ErrorMessage"] = simulationResult.Message;
+                    ModelState.AddModelError(string.Empty, simulationResult.Message);
                     ViewBag.Conflicts = simulationResult.Conflicts;
-                    ViewBag.Project = _context.Projects.FirstOrDefault(p => p.ProjectId == task.ProjectId);
-                    ViewBag.Crews = _context.Crews.ToList();
-                    ViewBag.Permits = _context.Permits.ToList();
-                    ViewBag.Tasks = _context.Tasks
-                        .Where(t => t.ProjectId == task.ProjectId && t.ProjectTaskId != id)
-                        .ToList();
-                    ViewBag.MaterialsList = _context.Materials.ToList();
+                    PopulateTaskViewBags(task.ProjectId, id);
                     return View(task);
                 }
 
@@ -183,6 +197,7 @@ namespace ConstructionSimulator.Controllers
 
                 // Auto-calculate and save task cost
                 _costCalculator.RecalculateAndSaveTaskCost(existingTask.ProjectTaskId);
+                _costCalculator.RecalculateAndSaveProjectCost(existingTask.ProjectId);
 
                 _context.SimulationLogs.Add(new SimulationLog
                 {
@@ -207,13 +222,7 @@ namespace ConstructionSimulator.Controllers
                 return RedirectToAction("Details", "Projects", new { id = existingTask.ProjectId });
             }
 
-            ViewBag.Project = _context.Projects.FirstOrDefault(p => p.ProjectId == task.ProjectId);
-            ViewBag.Crews = _context.Crews.ToList();
-            ViewBag.Permits = _context.Permits.ToList();
-            ViewBag.Tasks = _context.Tasks
-                .Where(t => t.ProjectId == task.ProjectId && t.ProjectTaskId != id)
-                .ToList();
-            ViewBag.MaterialsList = _context.Materials.ToList();
+            PopulateTaskViewBags(task.ProjectId, id);
 
             return View(task);
         }
@@ -261,6 +270,7 @@ namespace ConstructionSimulator.Controllers
 
                 _context.Tasks.Remove(task);
                 _context.SaveChanges();
+                _costCalculator.RecalculateAndSaveProjectCost(projectId);
 
                 TempData["SuccessMessage"] = $"Task '{task.Name}' deleted successfully!";
                 return RedirectToAction("Details", "Projects", new { id = projectId });
@@ -269,7 +279,7 @@ namespace ConstructionSimulator.Controllers
             return RedirectToAction("Index", "Projects");
         }
 
-        private void SaveTaskMaterials(int projectTaskId, int[] materialIds, decimal[] unitsRequired)
+        private void SaveTaskMaterials(int projectTaskId, int[]? materialIds, decimal[]? unitsRequired)
         {
             if (materialIds == null || unitsRequired == null)
                 return;
@@ -297,6 +307,88 @@ namespace ConstructionSimulator.Controllers
             }
 
             _context.SaveChanges();
+        }
+
+        private void PopulateTaskViewBags(int projectId, int? excludeTaskId = null)
+        {
+            ViewBag.ProjectId = projectId;
+            ViewBag.Project = _context.Projects.FirstOrDefault(p => p.ProjectId == projectId);
+            ViewBag.Crews = _context.Crews.ToList();
+            ViewBag.Permits = _context.Permits.ToList();
+
+            var taskQuery = _context.Tasks.Where(t => t.ProjectId == projectId);
+            if (excludeTaskId.HasValue)
+            {
+                taskQuery = taskQuery.Where(t => t.ProjectTaskId != excludeTaskId.Value);
+            }
+
+            ViewBag.Tasks = taskQuery.OrderBy(t => t.ProjectTaskId).ToList();
+            ViewBag.MaterialsList = _context.Materials.ToList();
+        }
+
+        private bool ValidateDependencies(ProjectTask task, int? excludeTaskId = null)
+        {
+            if (string.IsNullOrWhiteSpace(task.Dependencies))
+            {
+                return true;
+            }
+
+            var rawValues = task.Dependencies
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            var dependencyIds = new List<int>();
+            var invalidValues = new List<string>();
+
+            foreach (var value in rawValues)
+            {
+                if (int.TryParse(value, out var dependencyId))
+                {
+                    if (!dependencyIds.Contains(dependencyId))
+                    {
+                        dependencyIds.Add(dependencyId);
+                    }
+                }
+                else
+                {
+                    invalidValues.Add(value);
+                }
+            }
+
+            if (invalidValues.Any())
+            {
+                ModelState.AddModelError(nameof(task.Dependencies), $"Invalid task ID(s): {string.Join(", ", invalidValues)}.");
+            }
+
+            if (excludeTaskId.HasValue && dependencyIds.Contains(excludeTaskId.Value))
+            {
+                ModelState.AddModelError(nameof(task.Dependencies), "A task cannot depend on itself.");
+            }
+
+            if (!dependencyIds.Any())
+            {
+                return ModelState.IsValid;
+            }
+
+            var dependencyTasks = _context.Tasks
+                .Where(t => t.ProjectId == task.ProjectId && dependencyIds.Contains(t.ProjectTaskId))
+                .ToList();
+
+            var missingIds = dependencyIds.Except(dependencyTasks.Select(t => t.ProjectTaskId)).ToList();
+            if (missingIds.Any())
+            {
+                ModelState.AddModelError(nameof(task.Dependencies), $"Unknown dependency task ID(s): {string.Join(", ", missingIds)}.");
+            }
+
+            foreach (var dependencyTask in dependencyTasks)
+            {
+                if (dependencyTask.EndDate.Date >= task.StartDate.Date)
+                {
+                    ModelState.AddModelError(nameof(task.StartDate),
+                        $"Task '{task.Name}' must start after dependency task '{dependencyTask.Name}' finishes on {dependencyTask.EndDate:MMM dd, yyyy}.");
+                }
+            }
+
+            return ModelState.IsValid;
         }
     }
 }

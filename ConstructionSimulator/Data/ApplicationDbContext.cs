@@ -20,8 +20,8 @@ namespace ConstructionSimulator.Data
         public DbSet<Material> Materials { get; set; }
         public DbSet<Permit> Permits { get; set; }
         public DbSet<SimulationLog> SimulationLogs { get; set; }
-
         public DbSet<TaskMaterial> TaskMaterials { get; set; }
+        public DbSet<ContactSubmission> ContactSubmissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

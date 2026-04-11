@@ -14,10 +14,11 @@ namespace ConstructionSimulator.Services
 
         public decimal CalculateTaskCost(Models.ProjectTask task)
         {
+            decimal manualCost = task.Cost;
             decimal materialCost = CalculateTaskMaterialCost(task.ProjectTaskId);
             decimal crewCost = CalculateTaskCrewCost(task);
 
-            return materialCost + crewCost;
+            return manualCost + materialCost + crewCost;
         }
 
         public decimal CalculateTaskMaterialCost(int projectTaskId)
@@ -61,14 +62,27 @@ namespace ConstructionSimulator.Services
             if (task == null)
                 return 0;
 
+            decimal manualCost = task.Cost;
             decimal materialCost = CalculateTaskMaterialCost(projectTaskId);
             decimal crewCost = CalculateTaskCrewCost(task);
 
-            task.Cost = materialCost + crewCost;
+            task.Cost = manualCost + materialCost + crewCost;
 
             _context.SaveChanges();
 
             return task.Cost;
+        }
+
+        public decimal RecalculateAndSaveProjectCost(int projectId)
+        {
+            var project = _context.Projects.FirstOrDefault(p => p.ProjectId == projectId);
+            if (project == null)
+                return 0;
+
+            project.ActualCost = CalculateProjectCost(projectId);
+            _context.SaveChanges();
+
+            return project.ActualCost;
         }
 
         public decimal CalculateProjectCost(int projectId)

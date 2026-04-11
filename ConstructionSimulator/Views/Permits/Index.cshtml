@@ -1,0 +1,76 @@
+﻿@model IEnumerable<ConstructionSimulator.Models.Permit>
+@{
+    ViewData["Title"] = "Permits";
+}
+
+<section class="app-shell">
+    <div class="app-container">
+        <div class="app-hero">
+            <h1 class="app-hero-title">Permits</h1>
+            <p class="app-hero-subtitle">Manage permit lifecycle, fees, and compliance status.</p>
+        </div>
+
+        <div class="app-panel">
+            <div class="app-panel-head">
+                <h3>Permit Registry</h3>
+                <a asp-action="Create" class="app-btn">Create Permit</a>
+            </div>
+            <div class="app-panel-body">
+                @if (Model.Any())
+                {
+                    <div class="app-table-wrap">
+                        <table class="app-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Application</th>
+                                    <th>Approval</th>
+                                    <th>Expiry</th>
+                                    <th>Fee</th>
+                                    <th>Authority</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var permit in Model)
+                                {
+                                    var statusClass = permit.Status == "Approved"
+                                        ? "app-status-complete"
+                                        : permit.Status == "Pending"
+                                            ? "app-status-progress"
+                                            : "app-status-planning";
+
+                                    <tr>
+                                        <td>@permit.Type</td>
+                                        <td><span class="app-status @statusClass">@permit.Status</span></td>
+                                        <td>@permit.ApplicationDate.ToString("MMM dd, yyyy")</td>
+                                        <td>@(permit.ApprovalDate?.ToString("MMM dd, yyyy") ?? "-")</td>
+                                        <td>@(permit.ExpiryDate?.ToString("MMM dd, yyyy") ?? "-")</td>
+                                        <td>$@permit.Fee.ToString("N2")</td>
+                                        <td>@permit.IssuingAuthority</td>
+                                        <td>
+                                            <div class="app-inline-actions">
+                                                <a asp-action="Details" asp-route-id="@permit.PermitId" class="app-btn app-btn-sm">View</a>
+                                                <a asp-action="Edit" asp-route-id="@permit.PermitId" class="app-btn-ghost app-btn-sm">Edit</a>
+                                                <a asp-action="Delete" asp-route-id="@permit.PermitId" class="app-btn-danger app-btn-sm">Delete</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="app-empty">
+                        <h4>No permits found</h4>
+                        <p>Create your first permit to start assigning compliance requirements to tasks.</p>
+                        <a asp-action="Create" class="app-btn">Create Permit</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

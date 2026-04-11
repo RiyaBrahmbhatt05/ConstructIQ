@@ -1,6 +1,7 @@
 using ConstructionSimulator.Data;
 using ConstructionSimulator.Models;
 using ConstructionSimulator.Services;
+using ConstructionSimulator.Services.Alerts;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,10 @@ builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddScoped<SimulationEngine>();
 builder.Services.AddScoped<ConflictDetector>();
 builder.Services.AddScoped<CostCalculator>();
+builder.Services.AddScoped<AlertRuleEvaluator>();
+builder.Services.AddScoped<IAlertService, AlertService>();
+
+
 
 // Session Configuration
 builder.Services.AddSession(options =>

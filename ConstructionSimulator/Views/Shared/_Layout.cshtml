@@ -49,6 +49,9 @@
                             <a class="nav-link nav-link-ciq @ActiveClass("Materials", "Index")" asp-controller="Materials" asp-action="Index">Materials</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link nav-link-ciq @ActiveClass("Permits", "Index")" asp-controller="Permits" asp-action="Index">Permits</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link nav-link-ciq @ActiveClass("Crews", "Index")" asp-controller="Crews" asp-action="Index">Crews</a>
                         </li>
                         <li class="nav-item dropdown">
@@ -129,6 +132,18 @@
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        window.$crisp = [];
+        window.CRISP_WEBSITE_ID = "1f2b367c-4311-4a94-a13c-10205075044a";
+
+        (function () {
+            var d = document;
+            var s = d.createElement("script");
+            s.src = "https://client.crisp.chat/l.js";
+            s.async = 1;
+            d.getElementsByTagName("head")[0].appendChild(s);
+        })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
